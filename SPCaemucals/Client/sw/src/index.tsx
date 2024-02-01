@@ -1,12 +1,13 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
-import { Provider } from 'react-redux';
-import { store } from './app/store';
+import {createRoot} from 'react-dom/client';
+import {Provider} from 'react-redux';
+import {store} from './app/store';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {Login} from "./page/Login";
+import RequireAuth from "./component/RequireAuth";
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -22,24 +23,26 @@ function Detail() {
 const router = createBrowserRouter([
     {
         path: '/',
-        element: <App />,
-        errorElement: <ErrorPage />,
+        element: <RequireAuth>
+            <App></App>
+        </RequireAuth>,
+        errorElement: <ErrorPage/>,
         // You can add child routes here
         children: [
-            { path: 'about', element: <Detail /> },
+            {path: 'about', element: <Detail/>},
             // ... other child routes
         ],
     },
     {
-        path:'/login',
-        element:<Login/>
+        path: '/login',
+        element: <Login/>
     }
     // ... other top-level routes
 ]);
 root.render(
     <React.StrictMode>
         <Provider store={store}>
-            <RouterProvider router={router} />
+            <RouterProvider router={router}/>
         </Provider>
     </React.StrictMode>
 );
