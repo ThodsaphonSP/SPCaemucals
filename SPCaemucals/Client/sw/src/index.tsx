@@ -6,6 +6,7 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
+import {Login} from "./page/Login";
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
             // ... other child routes
         ],
     },
+    {
+        path:'/login',
+        element:<Login/>
+    }
     // ... other top-level routes
 ]);
 root.render(
