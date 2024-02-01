@@ -6,3 +6,7 @@ SPCaemucals/obj/
 SPCaemucals.Data/bin/
 
 SPCaemucals.Data/obj/
+
+SPCaemucals/Client/my-app/node_modules/
+
+SPCaemucals/Client/sw/package-lock.json

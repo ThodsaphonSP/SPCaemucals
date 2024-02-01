@@ -18,4 +18,8 @@
       <ProjectReference Include="..\SPCaemucals.Data\SPCaemucals.Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Client\" />
+    </ItemGroup>
+
 </Project>
