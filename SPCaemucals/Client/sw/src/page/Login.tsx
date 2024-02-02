@@ -137,7 +137,10 @@ export function Login(){
                                                 }
                                             />
                                         </FormControl>
-                                        <Button type="submit">Login</Button>
+
+                                    </Grid>
+                                    <Grid item={true} xs={12}>
+                                        <Button fullWidth={true} variant={"contained"} type="submit">Login</Button>
                                     </Grid>
                                 </Grid>
                             </Paper>

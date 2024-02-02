@@ -19,7 +19,8 @@ export const serviceLogin = async (credentials: LoginCredentials): Promise<User>
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
-            throw new Error(error.response?.data as string || 'Login failed');
+            const message = `Error ${error.response?.status} at ${error.config?.url}. Message: ${error.response?.data.title as string || 'Login failed'}`;
+            throw new Error(message);
         } else {
             throw new Error('An unknown error occurred');
         }
