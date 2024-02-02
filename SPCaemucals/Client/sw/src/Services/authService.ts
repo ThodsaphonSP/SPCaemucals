@@ -2,17 +2,18 @@
 import {firstValueFrom, from} from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import axios from 'axios';
-import {LoginCredentials, UserData} from "../type/authTypes";
+import {LoginCredentials} from "../type/authTypes";
+import {User} from "../type/User";
 
 const headers = {
     'accept': 'application/json',
     'Content-Type': 'application/json',
 };
-export const serviceLogin = async (credentials: LoginCredentials): Promise<UserData> => {
+export const serviceLogin = async (credentials: LoginCredentials): Promise<User> => {
     try {
         const response = await firstValueFrom(
-            from(axios.post('login?useCookies=true', credentials, { headers }))
-                .pipe(switchMap(() => from(axios.get<UserData>(`manage/info`, { headers }))))
+            from(axios.post('api/Account/login', credentials, { headers }))
+                .pipe(switchMap(() => from(axios.get<User>(`api/Account/info`, { headers }))))
         );
 
         return response.data;
@@ -25,9 +26,9 @@ export const serviceLogin = async (credentials: LoginCredentials): Promise<UserD
     }
 };
 
-export const serviceReLogin = async (): Promise<UserData> => {
+export const serviceReLogin = async (): Promise<User> => {
     try {
-        const response = await axios.get<UserData>(`manage/info`, { headers })
+        const response = await axios.get<User>(`manage/info`, { headers })
 
         return response.data;
     } catch (error) {

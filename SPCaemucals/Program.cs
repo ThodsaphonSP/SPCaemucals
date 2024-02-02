@@ -31,7 +31,23 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
+
+
+// Configure application cookie
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(60);
+    options.LoginPath = "/Account/Login"; // set your login path here
+    options.SlidingExpiration = true;
+});
+
+
+
+
 var app = builder.Build();
+
+
 app.MapIdentityApi<IdentityUser>();
 
 // Configure the HTTP request pipeline.
@@ -50,5 +66,5 @@ app.UseCors(x => x
 
 app.UseHttpsRedirection();
 app.UseRouting();
-
+app.UseAuthorization();
 app.Run();

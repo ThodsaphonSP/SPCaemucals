@@ -20,21 +20,7 @@ export const login = createAsyncThunk(
     }
 );
 
-export function getCookie(name: string = ".AspNetCore.Identity.Application"): string {
-    const value = "; " + document.cookie;
-    let parts = value.split("; " + name + "=");
-    if (parts && parts.length === 2) {
-        let popValue = parts.pop();
-        if (popValue) {
-            let splitValue = popValue.split(";").shift();
-            if (splitValue) {
-                return splitValue;
-            }
-        }
-    }
 
-    return '';
-}
 
 
 

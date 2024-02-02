@@ -1,9 +1,10 @@
 // src/types/authTypes.ts
+import {User} from "./User";
+
 export interface LoginCredentials {
-    email: string;
-    password: string;
-    twoFactorCode:string
-    twoFactorRecoveryCode:string
+    emailOrPhone: string,
+    password: string,
+    rememberMe: boolean
 }
 
 export interface UserData {
@@ -13,7 +14,7 @@ export interface UserData {
 }
 
 export interface AuthState {
-    user: UserData | null;
+    user: User | null;
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
     error: string | null;
 }
