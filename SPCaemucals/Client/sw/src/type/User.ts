@@ -1,4 +1,12 @@
 
+export class UserListResponse {
+    totalCount: number = 0;
+    currentPage: number = 1;
+    pageSize: number = 10;
+    totalPages: number = 1;
+    users: User[] = [];
+}
+
 export class User {
     id: string = '';
     userName: string = '';
@@ -18,6 +26,16 @@ export class User {
     lastName: string = '';
     companyId: string = '';
     company: Company = new Company();
+    roles: UserRole[] = [new UserRole()];
+}
+
+export class UserRole {
+    roleId: string = "";
+    roleName: string = "";
+
+    constructor() {
+        // Additional initialization can go here
+    }
 }
 
 export class Company {

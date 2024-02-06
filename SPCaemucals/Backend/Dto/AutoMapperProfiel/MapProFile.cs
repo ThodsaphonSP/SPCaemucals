@@ -1,4 +1,6 @@
 using AutoMapper;
+using SPCaemucals.Backend.Dto.Role;
+using SPCaemucals.Backend.Filters;
 using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Dto.AutoMapperProfiel;
@@ -8,8 +10,15 @@ public class MapProFile:Profile
     public MapProFile()
     {
         CreateMap<ApplicationUser, UserDto>()
-            .ForMember(dto => dto.Company, opt => 
-                opt.MapFrom(src => src.Company)).ReverseMap();
+            .ForMember(dto => dto.Company, opt =>
+                opt.MapFrom(src => src.Company))
+            .ForMember(dto => dto.Roles, opt => opt.MapFrom(src => src.UserRoles.Select(ur => new UserRoleDto { RoleId = ur.RoleId, RoleName = ur.Role.Name ?? string.Empty })))
+            
+            .ReverseMap();
+        
+       
+            
+            
         
         
         

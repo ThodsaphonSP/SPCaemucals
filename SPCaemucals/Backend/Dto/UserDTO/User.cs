@@ -1,4 +1,5 @@
 using SPCaemucals.Backend.Dto.CompanyDTO;
+using SPCaemucals.Backend.Dto.Role;
 
 
 public class UserDto
@@ -26,4 +27,6 @@ public class UserDto
     
     // Navigation property
     public Company Company { get; set; }
+    
+    public List<UserRoleDto> Roles { get; set; } = new List<UserRoleDto>(); // Use UserRoleDto here
 }

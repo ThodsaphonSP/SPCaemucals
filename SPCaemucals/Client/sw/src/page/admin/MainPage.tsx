@@ -22,7 +22,7 @@ import {User} from "../../type/User";
 import {useAppSelector} from "../../app/hooks";
 import {Outlet, useNavigate} from "react-router-dom";
 
-function GetName(user: User | null) {
+export function GetName(user: User | null) {
 
     if (user){
         return `${user.firstName}  ${user.lastName}`;

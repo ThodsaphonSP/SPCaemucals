@@ -1,10 +1,10 @@
 using System.Security.Claims;
 using AutoMapper;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SPCaemucals.Backend.Filters;
 using SPCaemucals.Backend.Models;
 using SPCaemucals.Data.Identities;
 using SPCaemucals.Data.Models;
@@ -13,22 +13,24 @@ namespace SPCaemucals.Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class AccountController : ControllerBase
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IMapper _mapper;
-        private ApplicationDbContext _appDbContext;
+        private readonly ApplicationDbContext _appDbContext;
 
         public AccountController(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager
-            ,IMapper _mapper, ApplicationDbContext appDbContext)
+            ,IMapper mapper, ApplicationDbContext appDbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            this._mapper = _mapper;
+            this._mapper = mapper;
             _appDbContext = appDbContext;
         }
         
+        [AllowAnonymous]
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest model)
@@ -54,7 +56,7 @@ namespace SPCaemucals.Backend.Controllers
             }
 
             // Attempt to sign in
-            var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe, lockoutOnFailure: false);
+            var result = await _signInManager.PasswordSignInAsync(userName ?? string.Empty, model.Password, model.RememberMe, lockoutOnFailure: false);
 
             if (result.Succeeded)
             {
@@ -75,6 +77,7 @@ namespace SPCaemucals.Backend.Controllers
             return Ok(); // Simplified, replace with actual success response
         }
         
+        [AllowAnonymous]
         [HttpPost]
         [Route("register")]
         public async Task<IActionResult> Register([FromBody] UserRegistrationRequest model)
@@ -125,13 +128,15 @@ namespace SPCaemucals.Backend.Controllers
 
         [HttpGet]
         [Route("info")]
-        [ProducesResponseType(typeof(ApplicationUser), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserInfo()
         {
             var id =  User.FindFirstValue(ClaimTypes.NameIdentifier);
             ApplicationUser? user = await _appDbContext.Users
-                .Include(u => u.Company).FirstOrDefaultAsync(u => u.Id == id);
+                .Include(u => u.Company)
+                .Include(x=>x.UserRoles)
+                .ThenInclude(x=>x.Role).FirstOrDefaultAsync(u => u.Id == id);
 
             if (user is null)
             {
@@ -141,6 +146,48 @@ namespace SPCaemucals.Backend.Controllers
 
             return Ok(userDto);
         }
+        
+
+        [HttpGet]
+        [Route("Users")]
+        // [ProducesResponseType(typeof(PagedList<UserDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUsers(int pageNumber = 1, int pageSize = 10,string phoneOrMail="")
+        {
+            var users = _appDbContext.Users;
+
+            if (!users.Any())
+            {
+                return NotFound("Users not found.");
+            }
+
+            var query = _appDbContext.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(phoneOrMail))
+            {
+                query = query.Where(u => EF.Functions.Like(u.Email, $"%{phoneOrMail}%") || EF.Functions.Like(u.PhoneNumber, $"%{phoneOrMail}%"));
+            }
+
+            query = query.OrderBy(x => x.UserName)
+                .Include(x => x.Company)
+                .Include(x => x.UserRoles)
+                .ThenInclude(ur => ur.Role);
+
+            var pagedUsers = await PagedList<ApplicationUser>.CreateAsync(query, pageNumber, pageSize);
+            
+
+            var usersDto = _mapper.Map<List<UserDto>>(pagedUsers);
+
+            var newOp = new
+            {
+                pagedUsers.TotalCount, pagedUsers.CurrentPage, pagedUsers.PageSize, pagedUsers.TotalPages,
+                Users = usersDto
+            };
+
+            return Ok(newOp);
+        }
+        
+        
 
 
     }

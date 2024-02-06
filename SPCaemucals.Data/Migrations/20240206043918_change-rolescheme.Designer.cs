@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SPCaemucals.Data.Identities;
 
@@ -11,9 +12,11 @@ using SPCaemucals.Data.Identities;
 namespace SPCaemucals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240206043918_change-rolescheme")]
+    partial class changerolescheme
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,7 +259,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "3e2213b3-36f1-4e7b-bad6-9a90f0b4e54f",
+                            ConcurrencyStamp = "69b2b7f5-71a9-4622-84fb-65a8b772ade2",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -264,7 +267,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEGwqxZDd3zGkU0szEEn0dQ9EYzkyO68HOZ6XQ5qWVrxoanm+RXDcJW3WdA4tXU93vA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAL9yyQh3Rv5j3RNusOQEU7bOgCcmt9DJy8vTxkPIy2WvQgfFf2uiA6zWAMzGUfwJQ==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
@@ -439,30 +442,6 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "2",
-                            Name = "SSaleRole",
-                            NormalizedName = "SSALEROLE"
-                        },
-                        new
-                        {
-                            Id = "3",
-                            Name = "JSaleRole",
-                            NormalizedName = "JSALEROLE"
-                        },
-                        new
-                        {
-                            Id = "4",
-                            Name = "RSaleRole",
-                            NormalizedName = "RSALEROLE"
-                        },
-                        new
-                        {
-                            Id = "5",
-                            Name = "AccountRole",
-                            NormalizedName = "ACCOUNTROLE"
                         });
                 });
 

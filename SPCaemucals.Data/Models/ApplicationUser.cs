@@ -18,4 +18,21 @@ public class ApplicationUser:IdentityUser
 
     // Navigation property
     public Company Company { get; set; }
+    
+    //Navigation propery
+    public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
+}
+
+public class ApplicationUserRole:IdentityUserRole<string>
+{
+    public virtual ApplicationUser User { get; set; }
+    public virtual ApplicationRole Role { get; set; }
+}
+
+public class ApplicationRole : IdentityRole
+{
+    // ... your other properties
+
+    // Navigation property for associated Users
+    public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
 }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Identity;
+
 using Microsoft.EntityFrameworkCore;
 using SPCaemucals.Backend.Repositories;
 using SPCaemucals.Backend.Services;
@@ -20,12 +21,20 @@ builder.Services
         options.JsonSerializerOptions.AllowTrailingCommas = true;
     });
 
+
+//builder.Services.AddSingleton<EmailSender, EmailSender>();
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(connectionString));
 
-builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
-    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()  // IdentityRole supplies the role functionality
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
@@ -49,7 +58,7 @@ builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
 
-app.MapIdentityApi<ApplicationUser>();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
