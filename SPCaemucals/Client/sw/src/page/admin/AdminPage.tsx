@@ -20,8 +20,8 @@ import pageData from "../../type/PageData.json"
 import {User, UserListResponse} from "../../type/User";
 import axios from "axios";
 import {GetName} from "./MainPage";
-
-
+import {useNavigate} from "react-router-dom";
+import {PersonAddAlt} from "@mui/icons-material";
 
 
 export function AdminPage() {
@@ -35,26 +35,28 @@ export function AdminPage() {
 
     const [searchText, setSearchText] = useState<string>("");
 
+    const navigate = useNavigate();
+
     useEffect(() => {
         dispatch(setTitle(pageData.admin.pageTitle));
         document.title = pageData.admin.pageTitle;
-        fetchData(page, rowsPerPage,searchText).catch(error=>{
+        fetchData(page, rowsPerPage, searchText).catch(error => {
             console.error('Failed to fetch data:', error);
         });
         // eslint-disable-next-line
     }, [dispatch, page, rowsPerPage]);
 
 
-    const fetchData = async (page: number, rowsPerPage: number,phoneOrMail=""): Promise<void> => {
+    const fetchData = async (page: number, rowsPerPage: number, phoneOrMail = ""): Promise<void> => {
         setLoading(true);
         try {
             const response = await axios
                 .get<UserListResponse>(`api/account/users?pagNumber=${page}&pageSize=${rowsPerPage}&phoneOrMail=${phoneOrMail}`, {
-                params: {
-                    page: page,
-                    pageSize: rowsPerPage
-                }
-            });
+                    params: {
+                        page: page,
+                        pageSize: rowsPerPage
+                    }
+                });
 
             setData(response.data.users);
             setTotalCount(response.data.totalCount);
@@ -74,11 +76,14 @@ export function AdminPage() {
     };
 
     function handleSearchOnclick() {
-        fetchData(page, rowsPerPage,searchText).catch(error=>{
+        fetchData(page, rowsPerPage, searchText).catch(error => {
             console.error('Failed to fetch data:', error);
         });
     }
 
+    const handleAddUserOnclick = () => {
+        navigate("/admin/0")
+    };
     return (
         <Paper sx={{margin: '10px'}}>
             <Grid container={true}>
@@ -101,15 +106,41 @@ export function AdminPage() {
                             </Select>
                         </FormControl>
                     </Grid>
-                    <Grid columnSpacing={1} justifyItems={"center"} alignContent={"center"} container={true} item={true}
-                          xs={3}>
-                        <Grid item={true} xs={6}>
+                    <Grid columnSpacing={1} justifyItems={"center"} alignContent={"center"} container={true} item={true} xs={5}>
+                        <Grid item={true} xs={5}>
                             <TextField value={searchText} fullWidth={true} size={"small"} id="outlined-basic"
-                                       onChange={(event)=>setSearchText(event.target.value)}
+                                       onChange={(event) => setSearchText(event.target.value)}
                                        label="ค้นหา" variant="outlined"/>
                         </Grid>
-                        <Grid item={true} xs={6}>
-                            <Button onClick={handleSearchOnclick} fullWidth={true} variant={"outlined"}>ค้นหา</Button>
+                        <Grid item={true} xs={3}>
+                            <Button
+                                onClick={handleSearchOnclick}
+                                fullWidth={true}
+                                variant={"outlined"} sx={{
+                                    backgroundColor: '#2E3192',
+                                    color: '#FFFF',
+                                    '&:hover': {backgroundColor: '#504DC2'}
+                                }}
+                            >
+                                ค้นหา
+                            </Button>
+                        </Grid>
+                        <Grid item={true} xs={4}>
+                            <Button
+                                onClick={handleAddUserOnclick}
+                                fullWidth={true}
+                                variant="outlined"
+                                sx={{
+                                    backgroundColor: '#4DBCFA',
+                                    color: 'white',
+                                    '&:hover': {
+                                        backgroundColor: '#3BACD4',
+                                    },
+                                }}
+                                startIcon={<PersonAddAlt />}
+                            >
+                                เพิ่มบัญชีผู้ใช้
+                            </Button>
                         </Grid>
 
                     </Grid>
@@ -139,22 +170,22 @@ export function AdminPage() {
                                     Array(5).fill(0).map((_, index) => (
                                         <TableRow key={index}>
                                             <TableCell>
-                                                <Skeleton />
+                                                <Skeleton/>
                                             </TableCell>
                                             <TableCell>
-                                                <Skeleton />
+                                                <Skeleton/>
                                             </TableCell>
                                             <TableCell>
-                                                <Skeleton />
+                                                <Skeleton/>
                                             </TableCell>
                                             <TableCell>
-                                                <Skeleton />
+                                                <Skeleton/>
                                             </TableCell>
                                             <TableCell>
-                                                <Skeleton />
+                                                <Skeleton/>
                                             </TableCell>
                                             <TableCell>
-                                                <Skeleton />
+                                                <Skeleton/>
                                             </TableCell>
                                         </TableRow>
                                     )) :

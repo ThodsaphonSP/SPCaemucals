@@ -10,6 +10,7 @@ import {Login} from "./page/Login";
 import RequireAuth from "./component/RequireAuth";
 import {AdminPage} from "./page/admin/AdminPage";
 import App from "./App";
+import {AdminEditPage} from "./page/admin/AdminEditPage";
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -29,6 +30,7 @@ const router = createBrowserRouter([
         // You can add child routes here
         children: [
             {path: 'admin', element: <RequireAuth><AdminPage></AdminPage></RequireAuth>},
+            {path: 'admin/:id', element: <RequireAuth><AdminEditPage></AdminEditPage></RequireAuth>},
             // ... other child routes
         ],
     },
