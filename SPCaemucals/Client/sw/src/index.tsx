@@ -8,6 +8,7 @@ import './index.css';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {Login} from "./page/Login";
 import RequireAuth from "./component/RequireAuth";
+import {MainAdmin} from "./page/admin/MainAdmin";
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
     {
         path: '/',
         element: <RequireAuth>
-            <App></App>
+            <MainAdmin/>
         </RequireAuth>,
         errorElement: <ErrorPage/>,
         // You can add child routes here

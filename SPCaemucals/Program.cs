@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using SPCaemucals.Backend.Repositories;
 using SPCaemucals.Backend.Services;
 using SPCaemucals.Data.Identities;
+using SPCaemucals.Data.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(connectionString));
 
-builder.Services.AddIdentityApiEndpoints<IdentityUser>()
+builder.Services.AddIdentityApiEndpoints<ApplicationUser>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddScoped<IProductService, ProductService>();
@@ -44,11 +45,11 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 
 
-
+builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
 
-app.MapIdentityApi<IdentityUser>();
+app.MapIdentityApi<ApplicationUser>();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -56,6 +57,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
 
 app.MapControllers();
 app.UseCors(x => x

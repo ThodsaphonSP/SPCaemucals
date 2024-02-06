@@ -29,8 +29,7 @@ export const serviceLogin = async (credentials: LoginCredentials): Promise<User>
 
 export const serviceReLogin = async (): Promise<User> => {
     try {
-        const response = await axios.get<User>(`manage/info`, { headers })
-
+        const response = await axios.get<User>(`api/Account/info`, { headers })
         return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {

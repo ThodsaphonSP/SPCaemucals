@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
@@ -5,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SPCaemucals.Backend.Models;
 using SPCaemucals.Data.Identities;
+using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Controllers
 {
@@ -12,13 +15,18 @@ namespace SPCaemucals.Backend.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IMapper _mapper;
+        private ApplicationDbContext _appDbContext;
 
-        public AccountController(UserManager<IdentityUser> userManager,SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager
+            ,IMapper _mapper, ApplicationDbContext appDbContext)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            this._mapper = _mapper;
+            _appDbContext = appDbContext;
         }
         
         [HttpPost]
@@ -87,11 +95,12 @@ namespace SPCaemucals.Backend.Controllers
             }
 
             // Create a new user object
-            var user = new IdentityUser
+            var user = new ApplicationUser()
             {
                 UserName = model.Email, // Using email as the username
                 Email = model.Email,
-                PhoneNumber = model.PhoneNumber
+                PhoneNumber = model.PhoneNumber,
+                CompanyId = model.CompanyId
             };
 
             // Attempt to create the user with the provided password
@@ -116,37 +125,23 @@ namespace SPCaemucals.Backend.Controllers
 
         [HttpGet]
         [Route("info")]
+        [ProducesResponseType(typeof(ApplicationUser), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserInfo()
         {
-            var userName = User.Identity?.Name;
+            var id =  User.FindFirstValue(ClaimTypes.NameIdentifier);
+            ApplicationUser? user = await _appDbContext.Users
+                .Include(u => u.Company).FirstOrDefaultAsync(u => u.Id == id);
 
-            if (string.IsNullOrEmpty(userName))
+            if (user is null)
             {
                 return NotFound("User not found.");
             }
+            UserDto userDto = _mapper.Map<UserDto>(user);
 
-            var user = await _userManager.Users
-                .FirstOrDefaultAsync(u => u.Email == userName || u.PhoneNumber == userName);
-
-            if (user != null)
-            {
-                return Ok(user);
-            }
-
-            return BadRequest("Email or phone number already exists.");
+            return Ok(userDto);
         }
 
 
-    }
-    
-    
-    
-
-    public class UserRegistrationRequest
-    {
-        public string Email { get; set; }
-        public string PhoneNumber { get; set; }
-        public string Password { get; set; }
-        // Add any additional fields as necessary
     }
 }

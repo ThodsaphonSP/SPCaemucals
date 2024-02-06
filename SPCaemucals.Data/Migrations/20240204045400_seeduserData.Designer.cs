@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SPCaemucals.Data.Identities;
 
@@ -11,9 +12,11 @@ using SPCaemucals.Data.Identities;
 namespace SPCaemucals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240204045400_seeduserData")]
+    partial class seeduserData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -238,7 +241,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "70e09f2c-fb74-4c53-81df-b6dbfc15e115",
+                            ConcurrencyStamp = "b63bb580-ccb7-4a31-97e5-af7442557f79",
                             Email = "user@example.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -246,8 +249,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@EXAMPLE.COM",
                             NormalizedUserName = "USER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPX42mSybWPwoX0NXsgA6G/ABYjFoZz5krE0jMb8Z0OTsm+2hVxg2Mh0orxlbyLP3g==",
-                            PhoneNumber = "0918131501",
+                            PasswordHash = "AQAAAAIAAYagAAAAECgweVoPFGwHxSaGLWZhyXHNbilnT3UA56h5uULg7St43fImHD6MW+8wrL62PCCq/A==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
                             TwoFactorEnabled = false,

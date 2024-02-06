@@ -1,37 +1,30 @@
 
 export class User {
-    id: string;
-    userName: string;
-    normalizedUserName: string;
-    email: string;
-    normalizedEmail: string;
-    emailConfirmed: boolean;
-    securityStamp: string;
-    concurrencyStamp: string;
-    phoneNumber: string | null;
-    phoneNumberConfirmed: boolean;
-    twoFactorEnabled: boolean;
-    lockoutEnd: string | null;
-    lockoutEnabled: boolean;
-    accessFailedCount: number;
-
-    constructor() {
-        this.id = "";
-        this.userName = "";
-        this.normalizedUserName = "";
-        this.email = "";
-        this.normalizedEmail = "";
-        this.emailConfirmed = false;
-        this.securityStamp = "";
-        this.concurrencyStamp = "";
-        this.phoneNumber = null;
-        this.phoneNumberConfirmed = false;
-        this.twoFactorEnabled = false;
-        this.lockoutEnd = null;
-        this.lockoutEnabled = true;
-        this.accessFailedCount = 0;
-    }
+    id: string = '';
+    userName: string = '';
+    normalizedUserName: string = '';
+    email: string = '';
+    normalizedEmail: string = '';
+    emailConfirmed: boolean = false;
+    securityStamp: string = '';
+    concurrencyStamp: string = '';
+    phoneNumber: string = '';
+    phoneNumberConfirmed: boolean = false;
+    twoFactorEnabled: boolean = false;
+    lockoutEnd: string = '';
+    lockoutEnabled: boolean = false;
+    accessFailedCount: number = 0;
+    firstName: string = '';
+    lastName: string = '';
+    companyId: string = '';
+    company: Company = new Company();
 }
+
+export class Company {
+    companyId: number = 0;
+    companyName: string = '';
+}
+
 
 export interface AuthState {
     user: User | null;

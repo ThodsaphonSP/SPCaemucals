@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SPCaemucals.Data.Identities;
 
@@ -11,9 +12,11 @@ using SPCaemucals.Data.Identities;
 namespace SPCaemucals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240204035407_addCompanyToContext")]
+    partial class addCompanyToContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,28 +234,6 @@ namespace SPCaemucals.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "1",
-                            AccessFailedCount = 0,
-                            CompanyId = 1,
-                            ConcurrencyStamp = "70e09f2c-fb74-4c53-81df-b6dbfc15e115",
-                            Email = "user@example.com",
-                            EmailConfirmed = true,
-                            FirstName = "John",
-                            LastName = "Doe",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "USER@EXAMPLE.COM",
-                            NormalizedUserName = "USER",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPX42mSybWPwoX0NXsgA6G/ABYjFoZz5krE0jMb8Z0OTsm+2hVxg2Mh0orxlbyLP3g==",
-                            PhoneNumber = "0918131501",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "",
-                            TwoFactorEnabled = false,
-                            UserName = "user"
-                        });
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.Category", b =>
@@ -299,24 +280,7 @@ namespace SPCaemucals.Data.Migrations
 
                     b.HasKey("CompanyId");
 
-                    b.ToTable("Company");
-
-                    b.HasData(
-                        new
-                        {
-                            CompanyId = 1,
-                            CompanyName = "S&P"
-                        },
-                        new
-                        {
-                            CompanyId = 2,
-                            CompanyName = "S2P"
-                        },
-                        new
-                        {
-                            CompanyId = 3,
-                            CompanyName = "Aceepta"
-                        });
+                    b.ToTable("Companies");
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.Product", b =>
