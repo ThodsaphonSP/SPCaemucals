@@ -2,13 +2,14 @@ import React from 'react';
 import {createRoot} from 'react-dom/client';
 import {Provider} from 'react-redux';
 import {store} from './app/store';
-import App from './App';
+
 import reportWebVitals from './reportWebVitals';
 import './index.css';
 import {createBrowserRouter, RouterProvider} from "react-router-dom";
 import {Login} from "./page/Login";
 import RequireAuth from "./component/RequireAuth";
-import {MainAdmin} from "./page/admin/MainAdmin";
+import {AdminPage} from "./page/admin/AdminPage";
+import App from "./App";
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -17,20 +18,17 @@ function ErrorPage() {
     return null;
 }
 
-function Detail() {
-    return null;
-}
 
 const router = createBrowserRouter([
     {
         path: '/',
         element: <RequireAuth>
-            <MainAdmin/>
+            <App/>
         </RequireAuth>,
         errorElement: <ErrorPage/>,
         // You can add child routes here
         children: [
-            {path: 'about', element: <Detail/>},
+            {path: 'admin', element: <RequireAuth><AdminPage></AdminPage></RequireAuth>},
             // ... other child routes
         ],
     },

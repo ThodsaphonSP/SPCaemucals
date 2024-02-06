@@ -5,7 +5,8 @@ import {
     Container,
     Grid,
     IconButton,
-    Menu, MenuItem, Paper,
+    Menu,
+    MenuItem,
     Toolbar,
     Tooltip,
     Typography
@@ -19,6 +20,7 @@ import {useSelector} from "react-redux";
 import {selectNavTitle, selectUser} from "../../app/store";
 import {User} from "../../type/User";
 import {useAppSelector} from "../../app/hooks";
+import {Outlet, useNavigate} from "react-router-dom";
 
 function GetName(user: User | null) {
 
@@ -38,12 +40,15 @@ function GetCompanyName(user: User | null) {
     }
 }
 
-export function MainAdmin() {
+export function MainPage() {
 
+    const navigate = useNavigate();
+    useEffect(()=>{
+        navigate("/admin")
+    },[navigate])
 
     const title = useAppSelector(selectNavTitle);
 
-    useEffect(()=>{},[title])
 
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null);
     const pages = ['Products', 'Pricing', 'Blog'];
@@ -74,10 +79,10 @@ export function MainAdmin() {
                 <Grid id={"sideBar"} item sm={'auto'} sx={{display: {xs: "none", sm: "flex"}}} style={{height: '100%'}}>
                     <SideManu/>
                 </Grid>
-                <Grid item={true} xs={12}  sm>
+                <Grid item={true} xs={12} sm>
                     <Grid direction={"column"} container={true}>
                         <Grid item={true} xs={12}>
-                            <AppBar position="static" sx={{backgroundColor:"white"}}>
+                            <AppBar position="static" sx={{backgroundColor: "white"}}>
                                 <Container maxWidth="xl">
                                     <Toolbar disableGutters>
                                         {/*<AdbIcon sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>*/}
@@ -91,17 +96,19 @@ export function MainAdmin() {
                                                     sx={{
                                                         mr: 2,
                                                         display: {xs: 'none', md: 'flex'},
-                                                        fontFamily: 'monospace',
                                                         fontWeight: 700,
-                                                        letterSpacing: '.3rem',
                                                         color: 'black',
                                                         textDecoration: 'none',
                                                     }}
                                                 >
-                                                    LOGO
+                                                    {title}
                                                 </Typography>
 
-                                                <Box sx={{color:"black", flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
+                                                <Box sx={{
+                                                    color: "black",
+                                                    flexGrow: 1,
+                                                    display: {xs: 'flex', md: 'none'}
+                                                }}>
                                                     <IconButton
                                                         size="large"
                                                         aria-label="account of current user"
@@ -147,7 +154,6 @@ export function MainAdmin() {
                                                         mr: 2,
                                                         display: {xs: 'flex', md: 'none'},
                                                         flexGrow: 1,
-                                                        fontFamily: 'monospace',
                                                         fontWeight: 700,
                                                         letterSpacing: '.3rem',
                                                         color: 'black',
@@ -160,13 +166,16 @@ export function MainAdmin() {
                                             <Grid item={true} xs={'auto'}>
                                                 <Tooltip title="Open settings">
                                                     <Grid container justifyContent="flex-start" columnSpacing={2}>
-                                                        <Grid  item>
-                                                            <Typography sx={{color:"black"}}>{GetName(user)}</Typography>
-                                                            <Typography sx={{color:"black"}}>{GetCompanyName(user)}</Typography>
+                                                        <Grid item>
+                                                            <Typography
+                                                                sx={{color: "black"}}>{GetName(user)}</Typography>
+                                                            <Typography
+                                                                sx={{color: "black"}}>{GetCompanyName(user)}</Typography>
                                                         </Grid>
-                                                        <Grid  item>
+                                                        <Grid item>
                                                             <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                                                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg"/>
+                                                                <Avatar alt="Remy Sharp"
+                                                                        src="/static/images/avatar/2.jpg"/>
                                                             </IconButton>
                                                         </Grid>
                                                     </Grid>
@@ -198,16 +207,12 @@ export function MainAdmin() {
                                         </Grid>
 
 
-
-
                                     </Toolbar>
                                 </Container>
                             </AppBar>
                         </Grid>
                         <Grid item={true} xs={12}>
-                            <Paper sx={{margin:"10px"}}>
-                                test
-                            </Paper>
+                            <Outlet></Outlet>
                         </Grid>
                     </Grid>
                 </Grid>

@@ -168,8 +168,8 @@ export function SideManu() {
                                 <ListItemIcon>
                                     <Circle sx={{ fontSize: 10 }} style={{ color: 'white' }} />
                                 </ListItemIcon>
-                                <Link to="/Manage" style={{ textDecoration: 'none', color: 'inherit' }}>
-                                    <ListItemText primary="จัดการบริษัท" />
+                                <Link to="/admin" style={{ textDecoration: 'none', color: 'inherit' }}>
+                                    <ListItemText primary="บัญชีผู้ใช้งาน" />
                                 </Link>
                             </ListItemButton>
                             <ListItemButton sx={{ pl: 4 }}>

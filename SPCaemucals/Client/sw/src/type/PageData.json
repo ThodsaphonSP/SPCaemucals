@@ -1,0 +1,7 @@
+{
+  "admin": {
+    "pageUrl": "/admin",
+    "allowRole": ["",""],
+    "pageTitle": "บัญชีผู้ใช้งาน Admin"
+  }
+}
