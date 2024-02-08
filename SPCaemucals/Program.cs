@@ -1,5 +1,7 @@
 using System.Text;
+using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,7 @@ using SPCaemucals.Backend.Repositories;
 using SPCaemucals.Backend.Services;
 using SPCaemucals.Data.Identities;
 using SPCaemucals.Data.Models;
+using Microsoft.ApplicationInsights;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -104,15 +107,33 @@ builder.Services.AddAuthentication(opt =>
         };
     });
 
+var configuration = new ConfigurationBuilder()
+    .AddJsonFile("appsettings.json")
+    .Build();
+
+
+
+var instrumentationKey = configuration["InstrumentationKey"];
+
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .WriteTo.Console()
+    .WriteTo.ApplicationInsights(instrumentationKey, TelemetryConverter.Traces) // Use the instrumentation key directly
     .CreateLogger();
 
 builder.Host.UseSerilog(); // Add this line
 
 builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
+
+
+// Migrate the database here
+var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+using (var scope = scopeFactory.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.Migrate();
+}
 
 app.UseSerilogRequestLogging();
 
@@ -150,6 +171,28 @@ app.Use(async (context, next) =>
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.UseExceptionHandler(appError =>
+{
+    appError.Run(async context =>
+    {
+        context.Response.StatusCode = 500; // you can set other status codes here
+        context.Response.ContentType = "application/json";
+
+        var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+        if (contextFeature != null)
+        {
+            // Log the error details
+            Log.Error($"Something went wrong in the app: {contextFeature.Error}", contextFeature.Error);
+
+            await context.Response.WriteAsync(new ErrorDetails()
+            {
+                StatusCode = context.Response.StatusCode,
+                Message = "Internal Server Error."  // Modify this as per your need
+            }.ToString());
+        }
+    });
+});
+
 
 
 app.MapControllers();
@@ -162,4 +205,20 @@ app.UseCors(x => x
 app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthorization();
+
+Log.Information("Application Starting Up");
+
 app.Run();
+
+Log.Information("Application Shutting Down");
+
+public class ErrorDetails
+{
+    public int StatusCode { get; set; }
+    public string Message { get; set; }
+
+    public override string ToString()
+    {
+        return JsonSerializer.Serialize(this);
+    }
+}
