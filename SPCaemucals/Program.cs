@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Primitives;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -12,7 +13,8 @@ using SPCaemucals.Backend.Repositories;
 using SPCaemucals.Backend.Services;
 using SPCaemucals.Data.Identities;
 using SPCaemucals.Data.Models;
-using Microsoft.ApplicationInsights;
+using SPCaemucals.Backend.Controllers;
+using SPCaemucals.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,12 +73,16 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()  // IdentityRol
 
 
 
+builder.Services.AddScoped<CorrelationIdHelper>();
+
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
+builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
 
 
 
@@ -98,13 +104,21 @@ builder.Services.AddAuthentication(opt =>
     })
     .AddJwtBearer(options =>
     {
-        options.TokenValidationParameters = new TokenValidationParameters
+        if (key != null)
         {
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
-            ValidateIssuer = false,
-            ValidateAudience = false,
-        };
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+                ValidateIssuer = false,
+                ValidateAudience = false,
+            };
+        }
+        else
+        {
+            throw new Exception("key at AddJwtBearer is missing");
+        }
+            
     });
 
 var configuration = new ConfigurationBuilder()
@@ -139,6 +153,25 @@ app.UseSerilogRequestLogging();
 
 app.Use(async (context, next) =>
 {
+    var correlationId = context.Request.Headers["CorrelationId"].FirstOrDefault();
+    if (string.IsNullOrEmpty(correlationId))
+    {
+        correlationId = Guid.NewGuid().ToString();
+        context.Request.Headers.Add("CorrelationId", correlationId);
+    }
+
+    context.Response.OnStarting(state =>
+    {
+        var ctx = (HttpContext)state;
+        ctx.Response.Headers.Add("CorrelationId", new StringValues(correlationId));
+        return Task.CompletedTask;
+    }, context);
+
+    await next.Invoke();
+});
+
+app.Use(async (context, next) =>
+{
     var url = context.Request?.Path.Value;
     var authorizationHeader = context.Request.Headers["Authorization"].FirstOrDefault();
 
@@ -153,9 +186,11 @@ app.Use(async (context, next) =>
     {
         body = await reader.ReadToEndAsync();
     }
+    
+    var correlationId = context.Request.Headers["CorrelationId"].FirstOrDefault();
 
     // Log Information
-    Log.Information($"Incoming Request. Url: {url}, Authorization Header: {authorizationHeader}, Body: {body}");
+    Log.Information($"Incoming Request. CorrelationId: {correlationId}, Url: {url}, Authorization Header: {authorizationHeader}, Body: {body}");
 
     req.Body.Position = 0; // rewind it again so next middleware can read it
 
@@ -170,6 +205,8 @@ app.Use(async (context, next) =>
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+
 
 app.UseExceptionHandler(appError =>
 {
