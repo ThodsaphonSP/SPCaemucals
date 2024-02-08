@@ -21,6 +21,7 @@ public class ProductController : ControllerBase
     {
         var response = await _productService.GetPagedAsync(filter, body);
         return Ok(response);
+        
     }
 
     [HttpGet]
