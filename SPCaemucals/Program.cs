@@ -113,7 +113,7 @@ var configuration = new ConfigurationBuilder()
 
 
 
-var instrumentationKey = configuration["InstrumentationKey"];
+var instrumentationKey = configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
 
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
