@@ -19,6 +19,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     
     // Define DbSet for Role
     public DbSet<ApplicationRole> Roles { get; set; }
+    public DbSet<RefreshToken> RefreshToken { get; set; }
     
     
     
@@ -28,6 +29,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         
         base.OnModelCreating(modelBuilder);
+        
+        modelBuilder.Entity<ApplicationUser>()
+            .HasMany(e => e.RefreshTokens)
+            .WithOne(e => e.User)
+            .HasForeignKey(uc => uc.UserId);
         
         modelBuilder.Entity<ApplicationUser>()
             .HasOne(u => u.Company)  // User has one Company

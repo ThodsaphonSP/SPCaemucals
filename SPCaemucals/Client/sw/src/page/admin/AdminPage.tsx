@@ -17,11 +17,13 @@ import React, {useEffect, useState} from "react";
 import {useDispatch} from "react-redux";
 import {setTitle} from "../../features/Nav/NavSlice";
 import pageData from "../../type/PageData.json"
-import {User, UserListResponse} from "../../type/User";
-import axios from "axios";
+import {User} from "../../type/User";
 import {GetName} from "./MainPage";
 import {useNavigate} from "react-router-dom";
 import {PersonAddAlt} from "@mui/icons-material";
+import {GetUserAPI} from "../../Services/UserAPI";
+
+
 
 
 export function AdminPage() {
@@ -50,13 +52,7 @@ export function AdminPage() {
     const fetchData = async (page: number, rowsPerPage: number, phoneOrMail = ""): Promise<void> => {
         setLoading(true);
         try {
-            const response = await axios
-                .get<UserListResponse>(`api/account/users?pagNumber=${page}&pageSize=${rowsPerPage}&phoneOrMail=${phoneOrMail}`, {
-                    params: {
-                        page: page,
-                        pageSize: rowsPerPage
-                    }
-                });
+            const response = await GetUserAPI(page, rowsPerPage, phoneOrMail);
 
             setData(response.data.users);
             setTotalCount(response.data.totalCount);

@@ -1,6 +1,11 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Serilog;
 using SPCaemucals.Backend.Repositories;
 using SPCaemucals.Backend.Services;
 using SPCaemucals.Data.Identities;
@@ -11,7 +16,34 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        In = ParameterLocation.Header,
+        Scheme = "bearer",
+        Description = "Please insert JWT with Bearer into field"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference 
+                {
+                    Type = ReferenceType.SecurityScheme, 
+                    Id = "Bearer" 
+                }
+            },
+            new List<string>()
+        } 
+    });
+});
 builder.Services.AddAuthorization();
 builder.Services
     .AddControllers()
@@ -41,6 +73,8 @@ builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
+builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+
 
 
 // Configure application cookie
@@ -52,14 +86,60 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
+// Before "var app = builder.Build();"
+var key = builder.Configuration["JwtKey"];
+builder.Services.AddAuthentication(opt =>
+    {
+        opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+            ValidateIssuer = false,
+            ValidateAudience = false,
+        };
+    });
 
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Host.UseSerilog(); // Add this line
 
 builder.Services.AddAutoMapper(typeof(Program));
 var app = builder.Build();
 
+app.UseSerilogRequestLogging();
 
+app.Use(async (context, next) =>
+{
+    var url = context.Request?.Path.Value;
+    var authorizationHeader = context.Request.Headers["Authorization"].FirstOrDefault();
 
+    // Enable buffering
+    context.Request.EnableBuffering();
 
+    // Read Request Body
+    string body = string.Empty;
+    var req = context.Request;
+    req.Body.Position = 0; // rewind
+    using (var reader = new StreamReader(req.Body, encoding: Encoding.UTF8, detectEncodingFromByteOrderMarks: false, leaveOpen: true))
+    {
+        body = await reader.ReadToEndAsync();
+    }
+
+    // Log Information
+    Log.Information($"Incoming Request. Url: {url}, Authorization Header: {authorizationHeader}, Body: {body}");
+
+    req.Body.Position = 0; // rewind it again so next middleware can read it
+
+    await next.Invoke();
+});
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -71,10 +151,10 @@ if (app.Environment.IsDevelopment())
 
 app.MapControllers();
 app.UseCors(x => x
-    .AllowAnyMethod()
-    .AllowAnyHeader()
-    .SetIsOriginAllowed(_ => true)
-    .AllowCredentials());
+    .WithOrigins("http://localhost:3000")  // allow specified origin
+    .AllowAnyMethod()                      // allow all HTTP methods
+    .AllowAnyHeader()                      // allow all headers
+    .AllowCredentials());                  // allow credentials
 
 app.UseHttpsRedirection();
 app.UseRouting();

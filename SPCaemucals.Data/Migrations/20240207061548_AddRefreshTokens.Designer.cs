@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SPCaemucals.Data.Identities;
 
@@ -11,9 +12,11 @@ using SPCaemucals.Data.Identities;
 namespace SPCaemucals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240207061548_AddRefreshTokens")]
+    partial class AddRefreshTokens
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,7 +259,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "f9dcf45f-954b-40f9-ac7f-8e5e5a7d383f",
+                            ConcurrencyStamp = "da6c0438-b678-4d08-9d1f-97a04b8cf861",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -264,7 +267,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEC1dZjGNJNZwgf9D2Mk3k0gxYifC7BWXYa7Thi/RkQHAWNId1Hzg1l1qLD1ib1JHHw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBiXmem8VaUAcEtMfDZUvR+mTCum4SFHK6RWIRZJOyNUJv1EOtWVM+AOlqm3HhmMvg==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
@@ -446,6 +449,7 @@ namespace SPCaemucals.Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("RevokedByIp")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Token")

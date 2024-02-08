@@ -20,7 +20,8 @@ public class ApplicationUser:IdentityUser
     public Company Company { get; set; }
     
     //Navigation propery
-    public virtual ICollection<ApplicationUserRole> UserRoles { get; set; }
+    public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } 
+    public List<RefreshToken> RefreshTokens { get; set; }
 }
 
 public class ApplicationUserRole:IdentityUserRole<string>

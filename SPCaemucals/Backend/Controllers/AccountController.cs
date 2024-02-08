@@ -1,9 +1,12 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using SPCaemucals.Backend.Filters;
 using SPCaemucals.Backend.Models;
 using SPCaemucals.Data.Identities;
@@ -11,7 +14,7 @@ using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     [Authorize]
     public class AccountController : ControllerBase
@@ -20,14 +23,16 @@ namespace SPCaemucals.Backend.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IMapper _mapper;
         private readonly ApplicationDbContext _appDbContext;
+        private readonly IConfiguration _configuration;
 
         public AccountController(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager
-            ,IMapper mapper, ApplicationDbContext appDbContext)
+            ,IMapper mapper, ApplicationDbContext appDbContext,IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             this._mapper = mapper;
             _appDbContext = appDbContext;
+            _configuration = configuration;
         }
         
         [AllowAnonymous]
@@ -35,44 +40,103 @@ namespace SPCaemucals.Backend.Controllers
         [Route("login")]
         public async Task<IActionResult> Login([FromBody] UserLoginRequest model)
         {
-            var userName = model.EmailOrPhone;
+            // The properties will be assigned once, no need to initialize them with empty strings.
+            string email, phone, id, userName = model.EmailOrPhone;
 
-            // Determine if input is an email or a phone number
-            if (userName.Contains("@")) // Simple check for email
+            // Used conditional operators (ternary operators) to simplify the code
+            var user = userName.Contains("@")
+                ? await _userManager.FindByEmailAsync(userName)
+                : await _userManager.Users.FirstOrDefaultAsync(user => user.PhoneNumber == userName);
+
+            // Check if user is not null and assign necessary variables.
+            if (user != null)
             {
-                var userByEmail = await _userManager.FindByEmailAsync(userName);
-                if (userByEmail != null)
+                userName = user.UserName;
+                email = user.Email;
+                phone = user.PhoneNumber;
+                id = user.Id;
+            }
+            else // If no user is found we can directly return UnAuthorized.
+            {
+                return Unauthorized();
+            }
+
+            // Authenticate the user.
+            var result = await _signInManager.PasswordSignInAsync(userName, model.Password, model.RememberMe,
+                lockoutOnFailure: false);
+
+            // Check if the authentication succeeded.
+            if (!result.Succeeded)
+            {
+                return Unauthorized();
+            }
+
+            // Setup the JWT token.
+            string jwtKey = _configuration["JwtKey"];
+            var key = Encoding.ASCII.GetBytes(jwtKey);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
                 {
-                    userName = userByEmail.UserName;
-                }
-            }
-            else // Assume it's a phone number
+                    new Claim("Email", email),
+                    new Claim("Phone", phone),
+                    new Claim("UserId", id)
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(15),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
+                    SecurityAlgorithms.HmacSha256Signature)
+            };
+            
+            var refreshToken = new RefreshToken
             {
-                var userByPhone = await _userManager.Users.FirstOrDefaultAsync(user => user.PhoneNumber == userName);
-                if (userByPhone != null)
-                {
-                    userName = userByPhone.UserName;
-                }
-            }
+                Token = Guid.NewGuid().ToString(),
+                Expires = DateTime.UtcNow.AddDays(1), // Set this according to your requirements
+                Created = DateTime.UtcNow,
+                CreatedByIp = Request.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                UserId = user.Id,
+                User = user
+            };
 
-            // Attempt to sign in
-            var result = await _signInManager.PasswordSignInAsync(userName ?? string.Empty, model.Password, model.RememberMe, lockoutOnFailure: false);
+            // Assuming you are using an Entity Framework Core context
+            // Replace 'context' with the name of your DbContext
+            _appDbContext.RefreshToken.Add(refreshToken);
+            await _appDbContext.SaveChangesAsync();
+            
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            
+            // Set access token in response header
+            Response.Headers.Add("Authorization", $"Bearer {tokenHandler.WriteToken(token)}");
+    
+            return Ok(new
+            {
+                Token = tokenHandler.WriteToken(token),
+                RefreshToken = refreshToken.Token
+            });
 
-            if (result.Succeeded)
-            {
-                // Handle successful login (e.g., generate JWT token)
-                return Ok(); // Simplified, replace with actual success response
-            }
-            else
-            {
-                return Unauthorized(); // Simplified, replace with actual error handling
-            }
+           
+            
         }
         
         [HttpPost]
         [Route("logout")]
         public async Task<IActionResult> Logout()
         {
+            // Get Claim
+            var claim = User.Claims.First(c => c.Type == "UserId");
+            if (claim == null)
+            {
+                return Unauthorized();
+            }
+
+            // Retrieve user's refresh tokens
+            var refreshTokens = await _appDbContext.RefreshToken.Where(t => t.UserId == claim.Value).ToListAsync();
+
+            // Remove the tokens
+            _appDbContext.RefreshToken.RemoveRange(refreshTokens);
+            await _appDbContext.SaveChangesAsync();
+
+            // SignOut from SignInManager
             await _signInManager.SignOutAsync();
             return Ok(); // Simplified, replace with actual success response
         }
@@ -132,7 +196,7 @@ namespace SPCaemucals.Backend.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserInfo()
         {
-            var id =  User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var id =  User.FindFirstValue("UserId");
             ApplicationUser? user = await _appDbContext.Users
                 .Include(u => u.Company)
                 .Include(x=>x.UserRoles)
@@ -145,6 +209,69 @@ namespace SPCaemucals.Backend.Controllers
             UserDto userDto = _mapper.Map<UserDto>(user);
 
             return Ok(userDto);
+        }
+        
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("refresh")]
+        public async Task<IActionResult> Refresh(TokenRequest request)
+        {
+            var refreshToken = await _appDbContext.RefreshToken.SingleOrDefaultAsync(x => x.Token == request.RefreshToken);
+
+            if (refreshToken == null)
+            {
+                return BadRequest("Invalid refresh token");
+            }
+
+            if (refreshToken.Expires < DateTime.UtcNow)
+            {
+                return BadRequest("Refresh token has expired");
+            }
+
+            var user = await _userManager.FindByIdAsync(refreshToken.UserId);
+            if (user == null)
+            {
+                return BadRequest("Invalid user");
+            }
+
+            // Generate new JWT and refresh tokens
+            string jwtKey = _configuration["JwtKey"];
+            var key = Encoding.ASCII.GetBytes(jwtKey);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim("Email", user.Email),
+                    new Claim("Phone", user.PhoneNumber),
+                    new Claim("UserId", user.Id)
+                }),
+                Expires = DateTime.UtcNow.AddMinutes(15),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+
+            var newRefreshToken = new RefreshToken
+            {
+                Token = Guid.NewGuid().ToString(),
+                Expires = DateTime.UtcNow.AddDays(1), // Set this according to your requirements
+                Created = DateTime.UtcNow,
+                CreatedByIp = Request.HttpContext.Connection.RemoteIpAddress?.ToString(),
+                UserId = user.Id,
+                User = user
+            };
+
+            // Delete old refresh token and add new one
+            _appDbContext.RefreshToken.Remove(refreshToken);
+            _appDbContext.RefreshToken.Add(newRefreshToken);
+            await _appDbContext.SaveChangesAsync();
+
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            return Ok(new
+            {
+                Token = tokenHandler.WriteToken(token),
+                RefreshToken = newRefreshToken.Token
+            });
         }
         
 

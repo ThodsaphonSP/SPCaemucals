@@ -32,9 +32,11 @@ export function Login(){
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         dispatch(login(credentials))
+
             .then((result) => {
                 if (login.fulfilled.match(result)) {
                     setDialogContent({ title: 'Info', text: 'Login Successful', status: 'success' });
+                    debugger
                     setIsDialogOpen(true);
                     navigate('/'); // on login success, redirect to "/dashboard"
                 } else if (login.rejected.match(result)) {
