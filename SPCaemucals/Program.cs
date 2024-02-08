@@ -56,7 +56,7 @@ builder.Services
 
 //builder.Services.AddSingleton<EmailSender, EmailSender>();
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
 
 builder.Services.AddDbContext<ApplicationDbContext>(
     options => options.UseSqlServer(connectionString));
