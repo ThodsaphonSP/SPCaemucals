@@ -8,6 +8,11 @@ public  class CorrelationIdHelper
     {
         _httpContextAccessor = httpContextAccessor;
     }
+
+    public string GetCorrelateTemplateString()
+    {
+        return "correlation id {@correlationId} |";
+    }
     
     public  string? GetCorrelationId( )
     {

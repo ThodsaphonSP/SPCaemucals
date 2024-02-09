@@ -5,7 +5,8 @@ using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Data.Identities;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserClaim<string>, ApplicationUserRole, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
+
 {
     
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :

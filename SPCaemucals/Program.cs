@@ -64,7 +64,8 @@ builder.Services
 var connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
 
 builder.Services.AddDbContext<ApplicationDbContext>(
-    options => options.UseSqlServer(connectionString));
+    options => options.UseSqlServer(connectionString)
+        .EnableSensitiveDataLogging());
 
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()  // IdentityRole supplies the role functionality

@@ -11,6 +11,7 @@ using SPCaemucals.Backend.Filters;
 using SPCaemucals.Backend.Models;
 using SPCaemucals.Data.Identities;
 using SPCaemucals.Data.Models;
+using SPCaemucals.Utility;
 
 namespace SPCaemucals.Backend.Controllers
 {
@@ -24,15 +25,23 @@ namespace SPCaemucals.Backend.Controllers
         private readonly IMapper _mapper;
         private readonly ApplicationDbContext _appDbContext;
         private readonly IConfiguration _configuration;
+        private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly ILogger<AccountController> _logger;
+        private readonly CorrelationIdHelper _coreHelper;
 
         public AccountController(UserManager<ApplicationUser> userManager,SignInManager<ApplicationUser> signInManager
-            ,IMapper mapper, ApplicationDbContext appDbContext,IConfiguration configuration)
+            ,IMapper mapper, ApplicationDbContext appDbContext,IConfiguration configuration,RoleManager<ApplicationRole> roleManager
+            ,ILogger<AccountController> logger,
+            CorrelationIdHelper coreHelper)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             this._mapper = mapper;
             _appDbContext = appDbContext;
             _configuration = configuration;
+            _roleManager = roleManager;
+            _logger = logger;
+            _coreHelper = coreHelper;
         }
         
         [AllowAnonymous]
@@ -141,7 +150,6 @@ namespace SPCaemucals.Backend.Controllers
             await _signInManager.SignOutAsync();
             return Ok(); // Simplified, replace with actual success response
         }
-        
         [AllowAnonymous]
         [HttpPost]
         [Route("register")]
@@ -161,33 +169,66 @@ namespace SPCaemucals.Backend.Controllers
             {
                 return BadRequest("Email or phone number already exists.");
             }
+            
+            
 
-            // Create a new user object
-            var user = new ApplicationUser()
+            using (var transaction = await _appDbContext.Database.BeginTransactionAsync())
             {
-                UserName = model.Email, // Using email as the username
-                Email = model.Email,
-                PhoneNumber = model.PhoneNumber,
-                CompanyId = model.CompanyId
-            };
-
-            // Attempt to create the user with the provided password
-            var result = await _userManager.CreateAsync(user, model.Password);
-
-            if (result.Succeeded)
-            {
-                // Optionally, sign in the user immediately or send an email confirmation
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return Ok("User registered successfully.");
-            }
-            else
-            {
-                // If there are any errors, return them
-                foreach (var error in result.Errors)
+                try
                 {
-                    ModelState.AddModelError("", error.Description);
+                    var user = new ApplicationUser()
+                    {
+                        UserName = model.Email,
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+                        Email = model.Email,
+                        PhoneNumber = model.PhoneNumber,
+                        CompanyId = model.CompanyId
+                    };
+
+                    var company = await _appDbContext.Company.FirstOrDefaultAsync(c => c.CompanyId == model.CompanyId);
+                    if (company == null)
+                    {
+                        return BadRequest("Invalid CompanyId");
+                    }
+            
+                    user.Company = company;
+
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    if (!result.Succeeded)
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return BadRequest(ModelState);
+                    }
+
+                    var addRoleResult = await _userManager.AddToRolesAsync(user, model.RoleName);
+                    if (!addRoleResult.Succeeded)
+                    {
+                        foreach (var error in addRoleResult.Errors)
+                        {
+                            ModelState.AddModelError("", error.Description);
+                        }
+                        return BadRequest(ModelState);
+                    }
+        
+                    // If everything is successful, commit the transaction
+                    transaction.Commit();
+
+                    await _signInManager.SignInAsync(user, isPersistent: false);
+                    
+                    _logger.LogInformation("{@id} | register user {@user}",_coreHelper.GetCorrelationId(),user);
+                    return Ok("User registered successfully.");
                 }
-                return BadRequest(ModelState);
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    _logger.LogError("correlationId: {@core} | {@error}",_coreHelper.GetCorrelationId(),ex);
+                    return StatusCode(500);
+                    // Other error handling, e.g. return a "500 Internal Server Error" to the client
+                }
             }
         }
 
@@ -295,10 +336,13 @@ namespace SPCaemucals.Backend.Controllers
             {
                 query = query.Where(u => EF.Functions.Like(u.Email, $"%{phoneOrMail}%") || EF.Functions.Like(u.PhoneNumber, $"%{phoneOrMail}%"));
             }
-
-            query = query.OrderBy(x => x.UserName)
-                .Include(x => x.Company)
-                .Include(x => x.UserRoles)
+            
+            
+            query = _appDbContext.Users
+                .Where(u => string.IsNullOrEmpty(phoneOrMail) || EF.Functions.Like(u.Email, $"%{phoneOrMail}%") || EF.Functions.Like(u.PhoneNumber, $"%{phoneOrMail}%"))
+                .OrderBy(u => u.UserName)
+                .Include(u => u.Company)
+                .Include(u => u.UserRoles)
                 .ThenInclude(ur => ur.Role);
 
             var pagedUsers = await PagedList<ApplicationUser>.CreateAsync(query, pageNumber, pageSize);

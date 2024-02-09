@@ -58,7 +58,7 @@ namespace SPCaemucals.Backend.Controllers
         {
             
             var correlationId = _coHelper.GetCorrelationId();
-            _logger.LogInformation($"Correlation ID: {correlationId}");
+            _logger.LogInformation("Correlation ID: {@correlationId}",_coHelper.GetCorrelationId());
             
             var query = _dbContext.Company.AsQueryable();
 
