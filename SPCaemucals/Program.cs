@@ -108,6 +108,7 @@ builder.Services.AddAuthentication(opt =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
             {
+                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
                 ValidateIssuer = false,

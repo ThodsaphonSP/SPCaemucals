@@ -71,6 +71,7 @@ namespace SPCaemucals.Backend.Controllers
                 return Unauthorized();
             }
 
+            int tokenMinuteDuration = Convert.ToInt32(_configuration["tokenMinuteDuration"]);
             // Setup the JWT token.
             string jwtKey = _configuration["JwtKey"];
             var key = Encoding.ASCII.GetBytes(jwtKey);
@@ -82,7 +83,7 @@ namespace SPCaemucals.Backend.Controllers
                     new Claim("Phone", phone),
                     new Claim("UserId", id)
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(15),
+                Expires = DateTime.UtcNow.AddMinutes(tokenMinuteDuration),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)
             };
