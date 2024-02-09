@@ -68,7 +68,14 @@ builder.Services.AddDbContext<ApplicationDbContext>(
         .EnableSensitiveDataLogging());
 
 
-builder.Services.AddIdentity<ApplicationUser, ApplicationRole>()  // IdentityRole supplies the role functionality
+builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
+    {
+        options.Password.RequireDigit = true;
+        options.Password.RequireLowercase = true;
+        options.Password.RequireNonAlphanumeric = false; // for special characters
+        options.Password.RequireUppercase = true;
+        options.Password.RequiredLength = 8;
+    } )  // IdentityRole supplies the role functionality
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
