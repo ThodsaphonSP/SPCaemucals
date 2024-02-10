@@ -255,7 +255,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "b6ea1ef5-eac7-47eb-8d8b-7e5ffee55bd2",
+                            ConcurrencyStamp = "cf588900-1740-4d48-8ead-26e809f4d729",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -263,7 +263,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEPQjO8IKsycH+uW3AtAVgw4zhVjE12IT/KVmQHVZOHTWRJ8VmlBFPGccJ3v8cBAGPA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBwOWGJB+/nt6uYTm/gYQMyuOwkuIw+3iQYS+e8KRs7SW1QkqXCM1oFTvDwFtMp5Tg==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
@@ -302,7 +302,7 @@ namespace SPCaemucals.Data.Migrations
 
                     b.Property<string>("CreatedById")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -315,13 +315,16 @@ namespace SPCaemucals.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedBy");
 
                     b.ToTable("Categories");
                 });
@@ -375,7 +378,7 @@ namespace SPCaemucals.Data.Migrations
 
                     b.Property<string>("CreatedById")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -394,8 +397,7 @@ namespace SPCaemucals.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -403,6 +405,10 @@ namespace SPCaemucals.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedBy");
 
                     b.ToTable("Products");
                 });
@@ -421,7 +427,7 @@ namespace SPCaemucals.Data.Migrations
 
                     b.Property<string>("CreatedById")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -442,8 +448,7 @@ namespace SPCaemucals.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UpdatedBy")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -452,7 +457,11 @@ namespace SPCaemucals.Data.Migrations
 
                     b.HasIndex("CategoryId");
 
+                    b.HasIndex("CreatedById");
+
                     b.HasIndex("ProductId");
+
+                    b.HasIndex("UpdatedBy");
 
                     b.ToTable("ProductMoveHistories");
                 });
@@ -559,6 +568,20 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Models.Category", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy")
+                        .OnDelete(DeleteBehavior.NoAction);
+                });
+
             modelBuilder.Entity("SPCaemucals.Data.Models.Product", b =>
                 {
                     b.HasOne("SPCaemucals.Data.Models.Category", "Category")
@@ -566,6 +589,17 @@ namespace SPCaemucals.Data.Migrations
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Category");
                 });
@@ -578,11 +612,22 @@ namespace SPCaemucals.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
                     b.HasOne("SPCaemucals.Data.Models.Product", "Product")
                         .WithMany("ProductMoveHistories")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Category");
 

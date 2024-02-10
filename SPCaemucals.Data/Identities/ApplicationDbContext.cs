@@ -38,7 +38,8 @@ namespace SPCaemucals.Data.Identities
             ConfigureProductMoveHistoryEntity(modelBuilder);
 
             ConfigureProductEntity(modelBuilder);
-            
+            ConfigureCategoryEntity(modelBuilder);
+
         }
     
         private void ConfigureApplicationUserEntity(ModelBuilder modelBuilder)
@@ -159,11 +160,29 @@ namespace SPCaemucals.Data.Identities
 
         private void ConfigureProductEntity(ModelBuilder modelBuilder)
         {
+            
             modelBuilder.Entity<Product>()
                 .HasOne(p => p.Category)
                 .WithMany(c => c.Products)
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Product>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(x => x.CreatedById)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<Product>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(x => x.UpdatedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<ProductMoveHistory>()
+                .Property(e => e.MoveType)
+                .HasConversion<int>();
         }
         
         private void ConfigureProductMoveHistoryEntity(ModelBuilder modelBuilder)
@@ -182,9 +201,46 @@ namespace SPCaemucals.Data.Identities
             
             
             
+            
+            
+            
             modelBuilder.Entity<ProductMoveHistory>()
                 .Property(e => e.MoveType)
                 .HasConversion<int>();
+            
+            modelBuilder.Entity<ProductMoveHistory>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(x => x.CreatedById)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<ProductMoveHistory>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(x => x.UpdatedBy)
+                .OnDelete(DeleteBehavior.NoAction);
+        }
+
+
+        private void ConfigureCategoryEntity(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ProductMoveHistory>()
+                .Property(e => e.MoveType)
+                .HasConversion<int>();
+            
+            modelBuilder.Entity<Category>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(x => x.CreatedById)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+            
+            modelBuilder.Entity<Category>()
+                .HasOne<ApplicationUser>()
+                .WithMany()
+                .HasForeignKey(x => x.UpdatedBy)
+                .OnDelete(DeleteBehavior.NoAction);
         }
 
        
