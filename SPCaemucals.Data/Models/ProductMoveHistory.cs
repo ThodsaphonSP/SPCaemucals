@@ -1,23 +1,33 @@
-﻿using SPCaemucals.Data.Enum;
-using SPCaemucals.Data.Models.Base;
-using System;
-using System.Collections.Generic;
+﻿
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SPCaemucals.Data.Enum;
 
 namespace SPCaemucals.Data.Models;
 
-public class ProductMoveHistory : BaseModel
+public class ProductMoveHistory 
 {
-    public Guid ProductId { get; set; }
     [ForeignKey(nameof(ProductId))]
+    public Guid ProductId { get; set; }
+    
     public virtual Product Product { get; set; }
     public Guid CategoryId { get; set; }
     [ForeignKey(nameof(CategoryId))]
     public virtual Category Category { get; set; }
-    public int Change { get; set; }
-    public int Remaining { get; set; }
+    public int Change { get; set; } // This field already indicates the difference (before and after)
+    public int QuantityBeforeChange { get; set; } // New field to track quantity before the change
+    public int QuantityAfterChange { get; set; } // New field to track quantity after the change
     public MoveType MoveType { get; set; }
+    
+    public Guid Id { get; set; }
+    public DateTime CreatedDate { get; set; }
+    public string CreatedById { get; set; }
+    public DateTime UpdatedDate { get; set; }
+    public string UpdatedBy { get; set; }
+    public bool IsActive { get; set; }
+
+    public ProductMoveHistory()
+    {
+        CreatedDate = DateTime.Now;
+        IsActive = true;
+    }
 }

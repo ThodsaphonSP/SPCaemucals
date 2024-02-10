@@ -5,19 +5,7 @@ namespace SPCaemucals.Backend.Services;
 
 public interface ICategoryService
 {
-    public Task<List<Category>> GetAllAsync();
+    public Task<List<Category>> GetAllAsync(int pageNumber,int pageSize,string name);
 }
 
-public class CategoryService : ICategoryService
-{
-    private readonly ICategoryRepository _categoryRepository;
-    public CategoryService(ICategoryRepository categoryRepository)
-    {
-        _categoryRepository = categoryRepository;
-    }
 
-    public Task<List<Category>> GetAllAsync()
-    {
-        return _categoryRepository.GetAllAsync();
-    }
-}
