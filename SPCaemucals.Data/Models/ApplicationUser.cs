@@ -22,6 +22,8 @@ public class ApplicationUser:IdentityUser
     //Navigation propery
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } 
     public List<RefreshToken> RefreshTokens { get; set; }
+    
+  
 }
 
 public class ApplicationUserRole:IdentityUserRole<string>

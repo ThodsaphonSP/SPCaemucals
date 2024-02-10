@@ -16,7 +16,7 @@ public class Product
     public DateTime CreatedDate { get; set; }
     public string CreatedById { get; set; }
     public DateTime UpdatedDate { get; set; }
-    public string UpdatedBy { get; set; }
+    public string? UpdatedBy { get; set; }
     public bool IsActive { get; set; }
 
     public Product()
@@ -26,4 +26,5 @@ public class Product
     }
     public virtual Category Category { get; set; }
     public virtual ICollection<ProductMoveHistory> ProductMoveHistories { get; set; }
+
 }
