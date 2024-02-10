@@ -64,8 +64,14 @@ builder.Services
 var connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
 
 builder.Services.AddDbContext<ApplicationDbContext>(
-    options => options.UseSqlServer(connectionString)
-        .EnableSensitiveDataLogging());
+    options => options.UseSqlServer(connectionString, sqlServerOptionsAction: sqlOptions =>
+    {
+        sqlOptions.CommandTimeout(60);
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+    }).EnableSensitiveDataLogging());
 
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
