@@ -164,11 +164,9 @@ using (var scope = scopeFactory.CreateScope())
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.Migrate();
     
-    //string filePath = Path.Combine(Directory.GetCurrentDirectory(),"sqlScript", "Provinces.sql");
+   
 
-   //  var seedData = new SeedProvince(dbContext);
-   //  
-   // await seedData.ExecuteSqlFromFileAsync();
+    
 }
 
 app.UseSerilogRequestLogging();
