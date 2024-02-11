@@ -362,6 +362,11 @@ namespace SPCaemucals.Data.Identities
         private void ConfigProvince(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Province>(entity => { entity.HasKey(e => e.Id); });
+
+            modelBuilder.Entity<Province>(option =>
+            {
+                option.Property(e => e.Id).ValueGeneratedNever();
+            });
         }
 
         private void ConfigDistrict(ModelBuilder modelBuilder)
@@ -373,6 +378,7 @@ namespace SPCaemucals.Data.Identities
             modelBuilder.Entity<District>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.HasOne<Province>(e=>e.Province)
                     .WithMany(x => x.Districts)
                     .HasForeignKey(x=>x.ProvinceId)
@@ -389,6 +395,7 @@ namespace SPCaemucals.Data.Identities
             modelBuilder.Entity<SubDistrict>(entity =>
             {
                 entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedNever();
                 entity.HasOne<District>(x=>x.District)
                     .WithMany(x => x.SubDistricts)
                     .IsRequired()
@@ -442,8 +449,11 @@ namespace SPCaemucals.Data.Identities
             });
         }
 
-       
+
         
-        
+
+
+
+
     }
 }

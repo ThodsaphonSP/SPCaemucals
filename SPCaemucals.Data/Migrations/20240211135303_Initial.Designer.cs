@@ -12,8 +12,8 @@ using SPCaemucals.Data.Identities;
 namespace SPCaemucals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240211122930_addProvince")]
-    partial class addProvince
+    [Migration("20240211135303_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -296,7 +296,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "ec72be6f-4dae-44e3-adc9-e6d083060d0e",
+                            ConcurrencyStamp = "dd57fc7a-b253-490e-bfb8-e5b47c622788",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -304,7 +304,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEN8vRtee8okSraOfRt7iYIMK3YttM3mc4RtNAvZkLsmtw8HhDgVY733thXEgiOBIRw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAELloUjj3uX7a+OMGA41tu4X5hG1PjGT6Nk3eS1v5JbgS8hdExsiuSCYpyux62hRYeQ==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
@@ -407,10 +407,7 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Models.District", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ProvinceId")
                         .HasColumnType("int");
@@ -554,10 +551,7 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Models.Province", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ThaiName")
                         .IsRequired()
@@ -994,10 +988,7 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Models.SubDistrict", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("DistrictId")
                         .HasColumnType("int");

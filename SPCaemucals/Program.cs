@@ -14,7 +14,7 @@ using SPCaemucals.Backend.Services;
 using SPCaemucals.Data.Identities;
 using SPCaemucals.Data.Models;
 using SPCaemucals.Backend.Controllers;
-
+using SPCaemucals.Script;
 using SPCaemucals.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -290,6 +290,13 @@ Log.Information("Application Shutting Down");
 
 
         await context.SaveChangesAsync();
+        
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(),"Script", "district.sql");
+
+        var seedData = new Seed(context);
+    
+        await seedData.ExecuteSqlFromFileAsync(filePath);
+        
     }
 
     
