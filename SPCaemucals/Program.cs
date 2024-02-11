@@ -166,9 +166,9 @@ using (var scope = scopeFactory.CreateScope())
     
     //string filePath = Path.Combine(Directory.GetCurrentDirectory(),"sqlScript", "Provinces.sql");
 
-    var seedData = new SeedProvince(dbContext);
-    
-   await seedData.ExecuteSqlFromFileAsync();
+   //  var seedData = new SeedProvince(dbContext);
+   //  
+   // await seedData.ExecuteSqlFromFileAsync();
 }
 
 app.UseSerilogRequestLogging();
