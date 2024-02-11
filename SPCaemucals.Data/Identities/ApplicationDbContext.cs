@@ -24,6 +24,16 @@ namespace SPCaemucals.Data.Identities
         public override DbSet<ApplicationRole> Roles { get; set; }
         public DbSet<RefreshToken> RefreshToken { get; set; }
         
+        public DbSet<Province> Provinces { get; set; }
+        public DbSet<District> Districts { get; set; }
+        public DbSet<SubDistrict> SubDistricts { get; set; }
+        
+        public DbSet<PostalCode> PostalCodes { get; set; }
+        
+        public DbSet<Address> Addresses { get; set; }
+        
+        
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -44,12 +54,20 @@ namespace SPCaemucals.Data.Identities
 
             ConfigureProductEntity(modelBuilder);
             ConfigureCategoryEntity(modelBuilder);
+            ConfigureProductEntity(modelBuilder);
+
+            ConfigProvince(modelBuilder);
+            ConfigDistrict(modelBuilder);
+            ConfigSubDistrict(modelBuilder);
+            ConfigPostalCode(modelBuilder);
+
+            ConfigAddress(modelBuilder);
             
 
         }
-        
-        
-    
+
+       
+
         private void ConfigureApplicationUserEntity(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ApplicationUser>()
@@ -252,6 +270,89 @@ namespace SPCaemucals.Data.Identities
                 .WithMany()
                 .HasForeignKey(x => x.UpdatedBy)
                 .OnDelete(DeleteBehavior.NoAction);
+        }
+
+        private void ConfigProvince(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Province>(entity => { entity.HasKey(e => e.Id); });
+        }
+
+        private void ConfigDistrict(ModelBuilder modelBuilder)
+        {
+            
+            
+            
+            
+            modelBuilder.Entity<District>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne<Province>(e=>e.Province)
+                    .WithMany(x => x.Districts)
+                    .HasForeignKey(x=>x.ProvinceId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+            
+            });
+            
+        
+        }
+        
+        private void ConfigSubDistrict(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<SubDistrict>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne<District>(x=>x.District)
+                    .WithMany(x => x.SubDistricts)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasForeignKey(x=>x.DistrictId);
+            });
+        }
+
+        private void ConfigPostalCode(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PostalCode>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne<SubDistrict>(e=>e.SubDistrict)
+                    .WithMany(e => e.PostalCodes)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .HasForeignKey(e => e.SubDistrictId);
+            });
+        }
+
+        private void ConfigAddress(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Address>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasOne<Province>(e=>e.Province)
+                    .WithMany(x => x.Addresses)
+                    .HasForeignKey(x => x.ProvinceId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                
+                entity.HasOne<District>(e=>e.District)
+                    .WithMany(x => x.Addresses)
+                    .HasForeignKey(x => x.DistrictId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                
+                entity.HasOne<SubDistrict>(e=>e.SubDistrict)
+                    .WithMany(x => x.Addresses)
+                    .HasForeignKey(x => x.SubDistrictId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                
+                entity.HasOne<PostalCode>(e=>e.PostalCode)
+                    .WithMany(x => x.Addresses)
+                    .HasForeignKey(x => x.PostalCodeCodeId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                
+            });
         }
 
        
