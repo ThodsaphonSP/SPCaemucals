@@ -28,6 +28,9 @@
       <None Update="Excel\ThepExcel-Thailand-Tambon.xlsx">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="Script\district.sql">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>
