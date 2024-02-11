@@ -1,7 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
 
-using SPCaemucals.Data.Models; // Ensure this is the correct namespace for your models
 using SPCaemucals.Data.Identities; // Ensure this is the correct namespace
 
 namespace SPCaemucals.Excel;
