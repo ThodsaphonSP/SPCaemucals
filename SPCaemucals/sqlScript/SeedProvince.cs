@@ -1,6 +1,6 @@
 
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
+
 using SPCaemucals.Data.Models; // Ensure this is the correct namespace for your models
 using SPCaemucals.Data.Identities; // Ensure this is the correct namespace
 
@@ -13,7 +13,6 @@ public class SeedProvince
     public SeedProvince(ApplicationDbContext context)
     {
         _context = context;
-        ExcelPackage.LicenseContext = LicenseContext.NonCommercial; // Set the license context for EPPlus
     }
 
     public async Task ExecuteSqlFromFileAsync(string filePath)
