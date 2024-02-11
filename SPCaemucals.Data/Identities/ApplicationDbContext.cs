@@ -62,11 +62,98 @@ namespace SPCaemucals.Data.Identities
             ConfigPostalCode(modelBuilder);
 
             ConfigAddress(modelBuilder);
-            
+
+            SeedProvinces(modelBuilder);
+
 
         }
 
-       
+        private void SeedProvinces(ModelBuilder modelBuilder)
+        {
+            List<Province> provinces = new List<Province>()
+            {
+                new Province { Id = 10, ThaiName = "กรุงเทพมหานคร" },
+            new Province { Id = 11, ThaiName = "สมุทรปราการ" },
+            new Province { Id = 12, ThaiName = "นนทบุรี" },
+            new Province { Id = 13, ThaiName = "ปทุมธานี" },
+            new Province { Id = 14, ThaiName = "พระนครศรีอยุธยา" },
+            new Province { Id = 15, ThaiName = "อ่างทอง" },
+            new Province { Id = 16, ThaiName = "ลพบุรี" },
+            new Province { Id = 17, ThaiName = "สิงห์บุรี" },
+            new Province { Id = 18, ThaiName = "ชัยนาท" },
+            new Province { Id = 19, ThaiName = "สระบุรี" },
+            new Province { Id = 20, ThaiName = "ชลบุรี" },
+            new Province { Id = 21, ThaiName = "ระยอง" },
+            new Province { Id = 22, ThaiName = "จันทบุรี" },
+            new Province { Id = 23, ThaiName = "ตราด" },
+            new Province { Id = 24, ThaiName = "ฉะเชิงเทรา" },
+            new Province { Id = 25, ThaiName = "ปราจีนบุรี" },
+            new Province { Id = 26, ThaiName = "นครนายก" },
+            new Province { Id = 27, ThaiName = "สระแก้ว" },
+            new Province { Id = 30, ThaiName = "นครราชสีมา" },
+            new Province { Id = 31, ThaiName = "บุรีรัมย์" },
+            new Province { Id = 32, ThaiName = "สุรินทร์" },
+            new Province { Id = 33, ThaiName = "ศรีสะเกษ" },
+            new Province { Id = 34, ThaiName = "อุบลราชธานี" },
+            new Province { Id = 35, ThaiName = "ยโสธร" },
+            new Province { Id = 36, ThaiName = "ชัยภูมิ" },
+            new Province { Id = 37, ThaiName = "อำนาจเจริญ" },
+            new Province { Id = 38, ThaiName = "บึงกาฬ" },
+            new Province { Id = 39, ThaiName = "หนองบัวลำภู" },
+            new Province { Id = 40, ThaiName = "ขอนแก่น" },
+            new Province { Id = 41, ThaiName = "อุดรธานี" },
+            new Province { Id = 42, ThaiName = "เลย" },
+            new Province { Id = 43, ThaiName = "หนองคาย" },
+            new Province { Id = 44, ThaiName = "มหาสารคาม" },
+            new Province { Id = 45, ThaiName = "ร้อยเอ็ด" },
+            new Province { Id = 46, ThaiName = "กาฬสินธุ์" },
+            new Province { Id = 47, ThaiName = "สกลนคร" },
+            new Province { Id = 48, ThaiName = "นครพนม" },
+            new Province { Id = 49, ThaiName = "มุกดาหาร" },
+            new Province { Id = 50, ThaiName = "เชียงใหม่" },
+            new Province { Id = 51, ThaiName = "ลำพูน" },
+            new Province { Id = 52, ThaiName = "ลำปาง" },
+            new Province { Id = 53, ThaiName = "อุตรดิตถ์" },
+            new Province { Id = 54, ThaiName = "แพร่" },
+            new Province { Id = 55, ThaiName = "น่าน" },
+            new Province { Id = 56, ThaiName = "พะเยา" },
+            new Province { Id = 57, ThaiName = "เชียงราย" },
+            new Province { Id = 58, ThaiName = "แม่ฮ่องสอน" },
+            new Province { Id = 60, ThaiName = "นครสวรรค์" },
+            new Province { Id = 61, ThaiName = "อุทัยธานี" },
+            new Province { Id = 62, ThaiName = "กำแพงเพชร" },
+            new Province { Id = 63, ThaiName = "ตาก" },
+            new Province { Id = 64, ThaiName = "สุโขทัย" },
+            new Province { Id = 65, ThaiName = "พิษณุโลก" },
+            new Province { Id = 66, ThaiName = "พิจิตร" },
+            new Province { Id = 67, ThaiName = "เพชรบูรณ์" },
+            new Province { Id = 70, ThaiName = "ราชบุรี" },
+            new Province { Id = 71, ThaiName = "กาญจนบุรี" },
+            new Province { Id = 72, ThaiName = "สุพรรณบุรี" },
+            new Province { Id = 73, ThaiName = "นครปฐม" },
+            new Province { Id = 74, ThaiName = "สมุทรสาคร" },
+            new Province { Id = 75, ThaiName = "สมุทรสงคราม" },
+            new Province { Id = 76, ThaiName = "เพชรบุรี" },
+            new Province { Id = 77, ThaiName = "ประจวบคีรีขันธ์" },
+            new Province { Id = 80, ThaiName = "นครศรีธรรมราช" },
+            new Province { Id = 81, ThaiName = "กระบี่" },
+            new Province { Id = 82, ThaiName = "พังงา" },
+            new Province { Id = 83, ThaiName = "ภูเก็ต" },
+            new Province { Id = 84, ThaiName = "สุราษฎร์ธานี" },
+            new Province { Id = 85, ThaiName = "ระนอง" },
+            new Province { Id = 86, ThaiName = "ชุมพร" },
+            new Province { Id = 90, ThaiName = "สงขลา" },
+            new Province { Id = 91, ThaiName = "สตูล" },
+            new Province { Id = 92, ThaiName = "ตรัง" },
+            new Province { Id = 93, ThaiName = "พัทลุง" },
+            new Province { Id = 94, ThaiName = "ปัตตานี" },
+            new Province { Id = 95, ThaiName = "ยะลา" },
+            new Province { Id = 96, ThaiName = "นราธิวาส" }
+            };
+            modelBuilder.Entity<Province>()
+                .HasData(provinces);
+        }
+
 
         private void ConfigureApplicationUserEntity(ModelBuilder modelBuilder)
         {
