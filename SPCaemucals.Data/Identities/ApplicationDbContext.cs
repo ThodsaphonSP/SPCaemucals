@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting;
 using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Data.Identities
@@ -8,9 +9,13 @@ namespace SPCaemucals.Data.Identities
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string, IdentityUserClaim<string>
         , ApplicationUserRole, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) :
-            base(options)
-        { }
+
+
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+
+        }
         
         public DbSet<Product> Products { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -39,8 +44,11 @@ namespace SPCaemucals.Data.Identities
 
             ConfigureProductEntity(modelBuilder);
             ConfigureCategoryEntity(modelBuilder);
+            
 
         }
+        
+        
     
         private void ConfigureApplicationUserEntity(ModelBuilder modelBuilder)
         {
@@ -180,9 +188,11 @@ namespace SPCaemucals.Data.Identities
                 .HasForeignKey(x => x.UpdatedBy)
                 .OnDelete(DeleteBehavior.NoAction);
             
-            modelBuilder.Entity<ProductMoveHistory>()
-                .Property(e => e.MoveType)
-                .HasConversion<int>();
+ 
+            
+            modelBuilder.Entity<Product>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
         }
         
         private void ConfigureProductMoveHistoryEntity(ModelBuilder modelBuilder)
@@ -220,6 +230,7 @@ namespace SPCaemucals.Data.Identities
                 .WithMany()
                 .HasForeignKey(x => x.UpdatedBy)
                 .OnDelete(DeleteBehavior.NoAction);
+
         }
 
 
