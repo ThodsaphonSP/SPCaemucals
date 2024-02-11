@@ -168,7 +168,7 @@ using (var scope = scopeFactory.CreateScope())
 
     var seedData = new SeedProvince(dbContext);
     
-   await seedData.ExecuteSqlFromFileAsync(filePath);
+   await seedData.ExecuteSqlFromFileAsync();
 }
 
 app.UseSerilogRequestLogging();
