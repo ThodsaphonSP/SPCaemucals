@@ -245,7 +245,8 @@ namespace SPCaemucals.Data.Migrations
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedBy = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    MoveType = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -337,7 +338,7 @@ namespace SPCaemucals.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "CompanyId", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", 0, 1, "cf588900-1740-4d48-8ead-26e809f4d729", "admin@sw.com", true, "John", "Doe", false, null, "ADMIN@SW.COM", "S&P_01", "AQAAAAIAAYagAAAAEBwOWGJB+/nt6uYTm/gYQMyuOwkuIw+3iQYS+e8KRs7SW1QkqXCM1oFTvDwFtMp5Tg==", "0918131505", false, "", false, "S&P_01" });
+                values: new object[] { "1", 0, 1, "3027e88a-d2f8-4f22-93ce-aecfb0a01593", "admin@sw.com", true, "John", "Doe", false, null, "ADMIN@SW.COM", "S&P_01", "AQAAAAIAAYagAAAAENvmfaHCCFgTTni1+sSAMd5UEAXsw1YGF5MZADJPkOzsFFrrkWJZrDt/cirHSTUVGA==", "0918131505", false, "", false, "S&P_01" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",

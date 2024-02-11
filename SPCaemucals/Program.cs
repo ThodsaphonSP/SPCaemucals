@@ -96,6 +96,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<ProductSeed>();
 
 
 
@@ -211,11 +212,10 @@ app.Use(async (context, next) =>
     await next.Invoke();
 });
 // Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
+if (app.Environment.IsDevelopment())
+{
+   await SeedData(app);
+}
 
 app.UseSwagger();
 app.UseSwaggerUI();
@@ -263,6 +263,30 @@ app.Run();
 
 Log.Information("Application Shutting Down");
 
+ static async Task SeedData(WebApplication app)
+{
+    var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+    using (var scope = scopeFactory.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+
+
+        var seedObject = scope.ServiceProvider.GetRequiredService<ProductSeed>();
+
+        // Check if any categories exist
+        if (!context.Categories.Any() && !context.Products.Any())
+        {
+            await seedObject.SeedCategoryAndProductAsync();
+        }
+
+
+        await context.SaveChangesAsync();
+    }
+
+    
+}
+
 public class ErrorDetails
 {
     public int StatusCode { get; set; }
@@ -273,3 +297,4 @@ public class ErrorDetails
         return JsonSerializer.Serialize(this);
     }
 }
+

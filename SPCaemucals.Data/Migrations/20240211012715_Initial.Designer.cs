@@ -12,7 +12,7 @@ using SPCaemucals.Data.Identities;
 namespace SPCaemucals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240210234832_Initial")]
+    [Migration("20240211012715_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -258,7 +258,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "cf588900-1740-4d48-8ead-26e809f4d729",
+                            ConcurrencyStamp = "3027e88a-d2f8-4f22-93ce-aecfb0a01593",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -266,7 +266,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBwOWGJB+/nt6uYTm/gYQMyuOwkuIw+3iQYS+e8KRs7SW1QkqXCM1oFTvDwFtMp5Tg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENvmfaHCCFgTTni1+sSAMd5UEAXsw1YGF5MZADJPkOzsFFrrkWJZrDt/cirHSTUVGA==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
@@ -388,6 +388,9 @@ namespace SPCaemucals.Data.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<int>("MoveType")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

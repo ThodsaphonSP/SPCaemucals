@@ -1,5 +1,6 @@
 ﻿
 using System.ComponentModel.DataAnnotations.Schema;
+using SPCaemucals.Data.Enum;
 
 namespace SPCaemucals.Data.Models;
 
@@ -18,6 +19,7 @@ public class Product
     public DateTime UpdatedDate { get; set; }
     public string? UpdatedBy { get; set; }
     public bool IsActive { get; set; }
+    
 
     public Product()
     {
