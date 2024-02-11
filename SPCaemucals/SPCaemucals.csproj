@@ -24,4 +24,10 @@
       <ProjectReference Include="..\SPCaemucals.Data\SPCaemucals.Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="Excel\ThepExcel-Thailand-Tambon.xlsx">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

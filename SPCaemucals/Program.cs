@@ -14,6 +14,7 @@ using SPCaemucals.Backend.Services;
 using SPCaemucals.Data.Identities;
 using SPCaemucals.Data.Models;
 using SPCaemucals.Backend.Controllers;
+
 using SPCaemucals.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -64,8 +65,14 @@ builder.Services
 var connectionString = builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING");
 
 builder.Services.AddDbContext<ApplicationDbContext>(
-    options => options.UseSqlServer(connectionString)
-        .EnableSensitiveDataLogging());
+    options => options.UseSqlServer(connectionString, sqlServerOptionsAction: sqlOptions =>
+    {
+        sqlOptions.CommandTimeout(60);
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+    }).EnableSensitiveDataLogging());
 
 
 builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
@@ -90,6 +97,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<ProductSeed>();
 
 
 
@@ -155,6 +163,10 @@ using (var scope = scopeFactory.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     dbContext.Database.Migrate();
+    
+   
+
+    
 }
 
 app.UseSerilogRequestLogging();
@@ -205,14 +217,16 @@ app.Use(async (context, next) =>
     await next.Invoke();
 });
 // Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
+if (app.Environment.IsDevelopment())
+{
+   await SeedData(app);
+}
 
 app.UseSwagger();
 app.UseSwaggerUI();
+
+
+
 
 
 
@@ -257,6 +271,30 @@ app.Run();
 
 Log.Information("Application Shutting Down");
 
+ static async Task SeedData(WebApplication app)
+{
+    var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
+    using (var scope = scopeFactory.CreateScope())
+    {
+        var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+
+
+        var seedObject = scope.ServiceProvider.GetRequiredService<ProductSeed>();
+
+        // Check if any categories exist
+        if (!context.Categories.Any() && !context.Products.Any())
+        {
+            await seedObject.SeedCategoryAndProductAsync();
+        }
+
+
+        await context.SaveChangesAsync();
+    }
+
+    
+}
+
 public class ErrorDetails
 {
     public int StatusCode { get; set; }
@@ -267,3 +305,4 @@ public class ErrorDetails
         return JsonSerializer.Serialize(this);
     }
 }
+
