@@ -12,7 +12,7 @@ using SPCaemucals.Data.Identities;
 namespace SPCaemucals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240211012715_Initial")]
+    [Migration("20240211060254_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -114,6 +114,44 @@ namespace SPCaemucals.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.Address", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AddressDetail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostalCodeCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProvinceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubDistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistrictId");
+
+                    b.HasIndex("PostalCodeCodeId");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.HasIndex("SubDistrictId");
+
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationRole", b =>
@@ -258,7 +296,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "3027e88a-d2f8-4f22-93ce-aecfb0a01593",
+                            ConcurrencyStamp = "9bed93c4-8505-442c-b014-9a3029428277",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -266,7 +304,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAENvmfaHCCFgTTni1+sSAMd5UEAXsw1YGF5MZADJPkOzsFFrrkWJZrDt/cirHSTUVGA==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOM+ZUcerSxErun0uhUvDGizNE4ktQ75l3Rek6s3J9Pw2tc2/G1hwgAUV8PvaOMHwA==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
@@ -366,6 +404,50 @@ namespace SPCaemucals.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Models.District", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ProvinceId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ThaiName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.ToTable("Districts");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.PostalCode", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SubDistrictId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("SubDistrictId");
+
+                    b.ToTable("PostalCodes");
+                });
+
             modelBuilder.Entity("SPCaemucals.Data.Models.Product", b =>
                 {
                     b.Property<Guid>("Id")
@@ -388,9 +470,6 @@ namespace SPCaemucals.Data.Migrations
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
-
-                    b.Property<int>("MoveType")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -472,6 +551,23 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("ProductMoveHistories");
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Models.Province", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("ThaiName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Provinces");
+                });
+
             modelBuilder.Entity("SPCaemucals.Data.Models.RefreshToken", b =>
                 {
                     b.Property<string>("Id")
@@ -508,6 +604,28 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("RefreshToken");
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Models.SubDistrict", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ThaiName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistrictId");
+
+                    b.ToTable("SubDistricts");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("SPCaemucals.Data.Models.ApplicationRole", null)
@@ -542,6 +660,41 @@ namespace SPCaemucals.Data.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.Address", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Models.District", "District")
+                        .WithMany("Addresses")
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Models.PostalCode", "PostalCode")
+                        .WithMany("Addresses")
+                        .HasForeignKey("PostalCodeCodeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Models.Province", "Province")
+                        .WithMany("Addresses")
+                        .HasForeignKey("ProvinceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Models.SubDistrict", "SubDistrict")
+                        .WithMany("Addresses")
+                        .HasForeignKey("SubDistrictId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("District");
+
+                    b.Navigation("PostalCode");
+
+                    b.Navigation("Province");
+
+                    b.Navigation("SubDistrict");
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationUser", b =>
@@ -586,6 +739,28 @@ namespace SPCaemucals.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.District", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Models.Province", "Province")
+                        .WithMany("Districts")
+                        .HasForeignKey("ProvinceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Province");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.PostalCode", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Models.SubDistrict", "SubDistrict")
+                        .WithMany("PostalCodes")
+                        .HasForeignKey("SubDistrictId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("SubDistrict");
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.Product", b =>
@@ -651,6 +826,17 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Models.SubDistrict", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Models.District", "District")
+                        .WithMany("SubDistricts")
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("District");
+                });
+
             modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationRole", b =>
                 {
                     b.Navigation("UserRoles");
@@ -675,9 +861,35 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("Users");
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Models.District", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("SubDistricts");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.PostalCode", b =>
+                {
+                    b.Navigation("Addresses");
+                });
+
             modelBuilder.Entity("SPCaemucals.Data.Models.Product", b =>
                 {
                     b.Navigation("ProductMoveHistories");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.Province", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Districts");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.SubDistrict", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("PostalCodes");
                 });
 #pragma warning restore 612, 618
         }

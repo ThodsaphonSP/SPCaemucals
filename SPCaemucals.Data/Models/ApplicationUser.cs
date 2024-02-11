@@ -23,6 +23,7 @@ public class ApplicationUser:IdentityUser
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } 
     public List<RefreshToken> RefreshTokens { get; set; }
     
+    
   
 }
 
