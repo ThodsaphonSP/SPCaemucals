@@ -19,6 +19,9 @@ using SPCaemucals.Utility;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// The following line enables Application Insights telemetry collection.
+builder.Services.AddApplicationInsightsTelemetry();
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -148,7 +151,6 @@ var instrumentationKey = configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
     .WriteTo.Console()
-    .WriteTo.ApplicationInsights(instrumentationKey, TelemetryConverter.Traces) // Use the instrumentation key directly
     .CreateLogger();
 
 builder.Host.UseSerilog(); // Add this line
