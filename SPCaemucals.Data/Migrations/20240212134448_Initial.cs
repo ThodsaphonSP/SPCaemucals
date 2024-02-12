@@ -41,6 +41,20 @@ namespace SPCaemucals.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Provinces",
                 columns: table => new
                 {
@@ -239,6 +253,39 @@ namespace SPCaemucals.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Parcels",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    SaleManId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DeliveryManId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ParcelStatus = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Parcels", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Parcels_AspNetUsers_DeliveryManId",
+                        column: x => x.DeliveryManId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Parcels_AspNetUsers_SaleManId",
+                        column: x => x.SaleManId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Parcels_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "RefreshToken",
                 columns: table => new
                 {
@@ -322,8 +369,7 @@ namespace SPCaemucals.Data.Migrations
                 name: "PostalCodes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SubDistrictId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -392,11 +438,18 @@ namespace SPCaemucals.Data.Migrations
                     ProvinceId = table.Column<int>(type: "int", nullable: false),
                     DistrictId = table.Column<int>(type: "int", nullable: false),
                     SubDistrictId = table.Column<int>(type: "int", nullable: false),
-                    PostalCodeCodeId = table.Column<int>(type: "int", nullable: false)
+                    PostalCodeCodeId = table.Column<int>(type: "int", nullable: false),
+                    CustomerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Addresses_Districts_DistrictId",
                         column: x => x.DistrictId,
@@ -532,12 +585,17 @@ namespace SPCaemucals.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "CompanyId", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", 0, 1, "dd57fc7a-b253-490e-bfb8-e5b47c622788", "admin@sw.com", true, "John", "Doe", false, null, "ADMIN@SW.COM", "S&P_01", "AQAAAAIAAYagAAAAELloUjj3uX7a+OMGA41tu4X5hG1PjGT6Nk3eS1v5JbgS8hdExsiuSCYpyux62hRYeQ==", "0918131505", false, "", false, "S&P_01" });
+                values: new object[] { "1", 0, 1, "4662ea93-dc10-4952-b797-7a225f02ee5d", "admin@sw.com", true, "John", "Doe", false, null, "ADMIN@SW.COM", "S&P_01", "AQAAAAIAAYagAAAAEBtf9nKQgPMI+OG0Dx5DKBL/T0p6uschu7hdzcD/OBkPBxRW7rzjBvSp+Q+o+hjFSw==", "0918131505", false, "", false, "S&P_01" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
                 values: new object[] { "1", "1" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_CustomerId",
+                table: "Addresses",
+                column: "CustomerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_DistrictId",
@@ -619,6 +677,21 @@ namespace SPCaemucals.Data.Migrations
                 column: "ProvinceId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Parcels_CustomerId",
+                table: "Parcels",
+                column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Parcels_DeliveryManId",
+                table: "Parcels",
+                column: "DeliveryManId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Parcels_SaleManId",
+                table: "Parcels",
+                column: "SaleManId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_PostalCodes_SubDistrictId",
                 table: "PostalCodes",
                 column: "SubDistrictId");
@@ -691,6 +764,9 @@ namespace SPCaemucals.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Parcels");
+
+            migrationBuilder.DropTable(
                 name: "ProductMoveHistories");
 
             migrationBuilder.DropTable(
@@ -701,6 +777,9 @@ namespace SPCaemucals.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Customers");
 
             migrationBuilder.DropTable(
                 name: "Products");

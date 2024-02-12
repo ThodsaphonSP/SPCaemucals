@@ -416,6 +416,9 @@ namespace SPCaemucals.Data.Identities
             modelBuilder.Entity<PostalCode>(entity =>
             {
                 entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                
                 entity.HasOne<SubDistrict>(e=>e.SubDistrict)
                     .WithMany(e => e.PostalCodes)
                     .IsRequired()

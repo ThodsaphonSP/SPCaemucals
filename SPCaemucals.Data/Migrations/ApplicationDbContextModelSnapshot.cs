@@ -349,7 +349,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "5e66c9cf-8ac0-4ee6-8580-e7363192cac2",
+                            ConcurrencyStamp = "4662ea93-dc10-4952-b797-7a225f02ee5d",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -357,7 +357,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEA4/aNJxYqlhf7fHxwgUnzNxetXjtnA6FJh3Hd4uTrmJnTXpJtnPQMDvfpC6+S4qDw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBtf9nKQgPMI+OG0Dx5DKBL/T0p6uschu7hdzcD/OBkPBxRW7rzjBvSp+Q+o+hjFSw==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
@@ -479,10 +479,7 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Models.PostalCode", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Code")
                         .IsRequired()
