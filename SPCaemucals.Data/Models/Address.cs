@@ -1,3 +1,5 @@
+using SPCaemucals.Data.Identities;
+
 namespace SPCaemucals.Data.Models;
 
 public class Address
@@ -10,7 +12,11 @@ public class Address
     public int DistrictId { get; set; }
     public int SubDistrictId { get; set; }
     public int PostalCodeCodeId { get; set; }
+    
+    public int CustomerId { get; set; }
 
+    
+    public virtual Customer Customer { get; set; }
     public virtual Province Province { get; set; }
     public virtual District District { get; set; }
     public virtual SubDistrict SubDistrict { get; set; }

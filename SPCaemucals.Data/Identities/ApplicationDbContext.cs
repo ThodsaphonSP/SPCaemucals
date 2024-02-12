@@ -32,6 +32,11 @@ namespace SPCaemucals.Data.Identities
         
         public DbSet<Address> Addresses { get; set; }
         
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Parcel> Parcels { get; set; }
+        
+        
+        
         
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -64,8 +69,10 @@ namespace SPCaemucals.Data.Identities
             ConfigAddress(modelBuilder);
 
             SeedProvinces(modelBuilder);
+            
+            ConfigCustomer(modelBuilder);
 
-
+            ConfigParcel(modelBuilder);
         }
 
         private void SeedProvinces(ModelBuilder modelBuilder)
@@ -449,10 +456,63 @@ namespace SPCaemucals.Data.Identities
             });
         }
 
+        private void ConfigCustomer(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Customer>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                
+                entity.HasMany<Address>(e => e.Addresses)
+                .WithOne(e => e.Customer)
+                .HasForeignKey(e => e.CustomerId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+                
+                
+                
+                
+                
+            });
+        }
+        
+        private void ConfigParcel(ModelBuilder modelBuilder)
+        {
+
+            modelBuilder.Entity<Parcel>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                
+                
+                entity.HasOne<Customer>(e => e.Customer)
+                    .WithMany(e => e.Parcels)
+                    .HasForeignKey(e => e.CustomerId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<ApplicationUser>(e => e.SaleMan)
+                    .WithMany(e => e.SoldItem)
+                    .HasForeignKey(e => e.SaleManId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+                
+                
+                entity.HasOne<ApplicationUser>(e => e.DeliveryMan)
+                    .WithMany(e => e.ShippedPackage)
+                    .HasForeignKey(e => e.DeliveryManId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+            
+            modelBuilder.Entity<Parcel>()
+                .Property(e => e.ParcelStatus)
+                .HasConversion<int>();
+            
+        }
 
         
 
-
+        
 
 
     }

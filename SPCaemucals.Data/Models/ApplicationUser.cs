@@ -1,6 +1,8 @@
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.AspNetCore.Identity;
+using SPCaemucals.Data.Identities;
 
 namespace SPCaemucals.Data.Models;
 
@@ -23,6 +25,8 @@ public class ApplicationUser:IdentityUser
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } 
     public List<RefreshToken> RefreshTokens { get; set; }
     
+    public virtual ICollection<Parcel> SoldItem { get; set; }
+    public virtual ICollection<Parcel> ShippedPackage { get; set; }
     
   
 }

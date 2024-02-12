@@ -11,3 +11,10 @@ public enum MoveType
     Add,
     Subtract,
 }
+
+public enum ParcelStatus
+{
+    Delivered,
+    Returned,
+    InTransit,
+}
