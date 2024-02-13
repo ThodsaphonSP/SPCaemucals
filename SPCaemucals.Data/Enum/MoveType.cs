@@ -18,3 +18,11 @@ public enum ParcelStatus
     Returned,
     InTransit,
 }
+
+public enum CustomerType
+{
+    Temporary,
+    Regular,
+    VIP,
+    GOV,
+}

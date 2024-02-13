@@ -35,6 +35,8 @@ namespace SPCaemucals.Data.Identities
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Parcel> Parcels { get; set; }
         
+        public DbSet<Title> Titles { get; set; }
+        
         
         
         
@@ -73,6 +75,9 @@ namespace SPCaemucals.Data.Identities
             ConfigCustomer(modelBuilder);
 
             ConfigParcel(modelBuilder);
+            ConfigTitle(modelBuilder);
+
+            SeedTitle(modelBuilder);
         }
 
         private void SeedProvinces(ModelBuilder modelBuilder)
@@ -185,6 +190,21 @@ namespace SPCaemucals.Data.Identities
                 userRole.HasOne(ur => ur.Role)
                     .WithMany(r => r.UserRoles)
                     .HasForeignKey(ur => ur.RoleId);
+            });
+        }
+
+        private void SeedTitle(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Title>(e =>
+            {
+                List<Title> titles = new List<Title>(
+                new []
+                {
+                    new Title(){Id = 1,Name = "นาย"},
+                    new Title(){Id = 2,Name = "นางสาว"}
+                }
+                    );
+                e.HasData(titles);
             });
         }
 
@@ -397,6 +417,28 @@ namespace SPCaemucals.Data.Identities
         
         }
         
+        
+        private void ConfigTitle(ModelBuilder modelBuilder)
+        {
+            
+            
+            
+            
+            modelBuilder.Entity<Title>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                entity.HasMany<Customer>(e=>e.Customers)
+                    .WithOne(x => x.Title)
+                    .HasForeignKey(x=>x.TitleId)
+                    .IsRequired(false)
+                    .OnDelete(DeleteBehavior.NoAction);
+            
+            });
+            
+        
+        }
+        
         private void ConfigSubDistrict(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SubDistrict>(entity =>
@@ -471,11 +513,17 @@ namespace SPCaemucals.Data.Identities
                 .HasForeignKey(e => e.CustomerId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<Title>(e => e.Title)
+                    .WithMany(e => e.Customers)
+                    .HasForeignKey(e => e.TitleId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
                 
-                
-                
-                
-                
+                modelBuilder.Entity<Customer>()
+                    .Property(e => e.CustomerType)
+                    .HasConversion<int>();
+
             });
         }
         

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SPCaemucals.Data.Identities;
 
@@ -11,9 +12,11 @@ using SPCaemucals.Data.Identities;
 namespace SPCaemucals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240213083836_add title")]
+    partial class addtitle
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -118,26 +121,12 @@ namespace SPCaemucals.Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
-                    b.Property<string>("AccountNo")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("CreditDay")
-                        .HasColumnType("int")
-                        .HasComment("เครดิต-วัน");
-
-                    b.Property<decimal>("CreditLimit")
-                        .HasColumnType("decimal(18, 4)");
-
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("CustomerType")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18, 4)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -152,8 +141,7 @@ namespace SPCaemucals.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TitleId")
-                        .HasColumnType("int")
-                        .HasComment("คำนำหน้าชื่อ");
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -203,18 +191,6 @@ namespace SPCaemucals.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Titles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "นาย"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "นางสาว"
-                        });
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.Address", b =>
@@ -402,7 +378,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "acbdda97-8724-4869-8fae-7d8f4f5e9320",
+                            ConcurrencyStamp = "13d0fdf0-97fd-44b2-904c-96618437d30b",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -410,7 +386,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOvXqDl/yrNwETGLrsBSQX57JBU0fbccE6vWN73JGh+zKCqJreLoCp63D1B2PjkvQQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPKlIjcdUBKjZ7VshoXiWwrne9Jb1QTNJ7IWVrvAId8DQSkkR+ykGH9G/mxytACUww==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",

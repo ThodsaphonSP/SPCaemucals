@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SPCaemucals.Data.Identities;
 
@@ -11,9 +12,11 @@ using SPCaemucals.Data.Identities;
 namespace SPCaemucals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240213085004_add more field")]
+    partial class addmorefield
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -127,7 +130,7 @@ namespace SPCaemucals.Data.Migrations
                         .HasComment("เครดิต-วัน");
 
                     b.Property<decimal>("CreditLimit")
-                        .HasColumnType("decimal(18, 4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("CustomerId")
                         .IsRequired()
@@ -137,7 +140,7 @@ namespace SPCaemucals.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<decimal>("Discount")
-                        .HasColumnType("decimal(18, 4)");
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -203,18 +206,6 @@ namespace SPCaemucals.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Titles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "นาย"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "นางสาว"
-                        });
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.Address", b =>
@@ -402,7 +393,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "acbdda97-8724-4869-8fae-7d8f4f5e9320",
+                            ConcurrencyStamp = "c4275289-0f50-46b4-8978-c729c4cdbc66",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -410,7 +401,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOvXqDl/yrNwETGLrsBSQX57JBU0fbccE6vWN73JGh+zKCqJreLoCp63D1B2PjkvQQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEBqhtIfQEg1iH70desUX0W1bAIzi7WC+JKSOsMWbOsmzlMrTUsRo7G0rPnEfnJkpZA==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
