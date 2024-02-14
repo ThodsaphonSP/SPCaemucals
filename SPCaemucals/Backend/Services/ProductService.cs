@@ -8,7 +8,7 @@ namespace SPCaemucals.Backend.Services;
 public interface IProductService
 {
     public Task<PagedResponse<List<ProductResponse>>> GetPagedAsync(PaginationFilter filter, SearchBody body);
-    public Task<ProductResponse?> GetAsync(Guid id);
+    public Task<ProductResponse?> GetAsync(int id);
 }
 
 public class ProductService : IProductService
@@ -25,7 +25,7 @@ public class ProductService : IProductService
         return _productRepository.GetPagedAsync(filter, body);
     }
 
-    public Task<ProductResponse?> GetAsync(Guid id)
+    public Task<ProductResponse?> GetAsync(int id)
     {
         return _productRepository.GetAsync(id);
     }

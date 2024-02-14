@@ -218,6 +218,8 @@ app.Use(async (context, next) =>
 
     await next.Invoke();
 });
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -294,10 +296,20 @@ Log.Information("Application Shutting Down");
         await context.SaveChangesAsync();
         
         string filePath = Path.Combine(Directory.GetCurrentDirectory(),"Script", "district.sql");
+        
+        string districtPath = Path.Combine(Directory.GetCurrentDirectory(),"Script", "district.sql");
+        
+        string subDistrictPath = Path.Combine(Directory.GetCurrentDirectory(),"Script", "SubDistricts.sql");
+        string pstPath = Path.Combine(Directory.GetCurrentDirectory(),"Script", "PostalCodes.sql");
 
         var seedData = new Seed(context);
     
-        await seedData.ExecuteSqlFromFileAsync(filePath);
+        await seedData.InsertProvinceAsync(filePath);
+        await seedData.InsertDistrictAsync(districtPath);
+        
+        await seedData.InsertSubDistrictAsync(subDistrictPath);
+        
+        await seedData.InsertPostalAsync(pstPath);
         
     }
 

@@ -13,7 +13,7 @@ public class Category
     public virtual ICollection<Product> Products { get; set; }
     public virtual ICollection<ProductMoveHistory> ProductMoveHistories { get; set; }
     
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public DateTime CreatedDate { get; set; }
     public string CreatedById { get; set; }
     public DateTime UpdatedDate { get; set; }

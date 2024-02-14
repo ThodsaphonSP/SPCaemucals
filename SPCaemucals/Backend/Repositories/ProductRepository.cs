@@ -11,7 +11,7 @@ namespace SPCaemucals.Backend.Repositories;
 public interface IProductRepository
 {
     public Task<PagedResponse<List<ProductResponse>>> GetPagedAsync(PaginationFilter filter, SearchBody body);
-    public Task<ProductResponse?> GetAsync(Guid id);
+    public Task<ProductResponse?> GetAsync(int id);
 }
 
 public class ProductRepository : IProductRepository
@@ -56,7 +56,7 @@ public class ProductRepository : IProductRepository
         return new PagedResponse<List<ProductResponse>>(products, validFilter.PageNumber, validFilter.PageSize, total);
     }
 
-    public Task<ProductResponse?> GetAsync(Guid id)
+    public Task<ProductResponse?> GetAsync(int id)
     {
         return _context.Products
             .Include(e => e.Category)

@@ -17,7 +17,7 @@ public class Seed
         _context = context;
     }
 
-    public async Task ExecuteSqlFromFileAsync(string filePath)
+    public async Task InsertProvinceAsync(string filePath)
     {
         if (_context.Districts.Any())
         {
@@ -32,16 +32,62 @@ public class Seed
         string sqlCommand = await File.ReadAllTextAsync(filePath);
 
     
-       
-        
+        await _context.Database.ExecuteSqlRawAsync(sqlCommand);
+
+    }
+
+    public async Task InsertDistrictAsync(string filePath)
+    {
+        if (_context.Districts.Any())
+        {
+            return;
+        }
+
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException("File not found", filePath);
+        }
+
+        string sqlCommand = await File.ReadAllTextAsync(filePath);
+
     
+        await _context.Database.ExecuteSqlRawAsync(sqlCommand);
+    }
+    
+    
+    public async Task InsertSubDistrictAsync(string filePath)
+    {
+        if (_context.SubDistricts.Any())
+        {
+            return;
+        }
 
-            await _context.Database.ExecuteSqlRawAsync(sqlCommand);
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException("File not found", filePath);
+        }
 
-           
+        string sqlCommand = await File.ReadAllTextAsync(filePath);
 
-            
-            
-        
+    
+        await _context.Database.ExecuteSqlRawAsync(sqlCommand);
+    }
+    
+    public async Task InsertPostalAsync(string filePath)
+    {
+        if (_context.PostalCodes.Any())
+        {
+            return;
+        }
+
+        if (!File.Exists(filePath))
+        {
+            throw new FileNotFoundException("File not found", filePath);
+        }
+
+        string sqlCommand = await File.ReadAllTextAsync(filePath);
+
+    
+        await _context.Database.ExecuteSqlRawAsync(sqlCommand);
     }
 }

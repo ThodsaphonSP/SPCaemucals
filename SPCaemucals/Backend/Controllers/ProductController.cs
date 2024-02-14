@@ -25,7 +25,7 @@ public class ProductController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get([FromQuery] Guid id)
+    public async Task<IActionResult> Get([FromQuery] int id)
     {
         var response = await _productService.GetAsync(id);
         if(response is null)

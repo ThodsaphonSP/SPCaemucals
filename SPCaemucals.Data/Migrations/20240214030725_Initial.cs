@@ -41,17 +41,16 @@ namespace SPCaemucals.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customers",
+                name: "DeliveryVendors",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.PrimaryKey("PK_DeliveryVendors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -64,6 +63,42 @@ namespace SPCaemucals.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Provinces", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Titles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Titles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UnitOfMeasurements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UnitOfMeasurements", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Vendors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vendors", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,6 +173,32 @@ namespace SPCaemucals.Data.Migrations
                         principalTable: "Provinces",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerType = table.Column<int>(type: "int", nullable: false),
+                    TitleId = table.Column<int>(type: "int", nullable: false, comment: "คำนำหน้าชื่อ"),
+                    CreditDay = table.Column<int>(type: "int", nullable: false, comment: "เครดิต-วัน"),
+                    Discount = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    CreditLimit = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    AccountNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customers_Titles_TitleId",
+                        column: x => x.TitleId,
+                        principalTable: "Titles",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -229,7 +290,7 @@ namespace SPCaemucals.Data.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -250,39 +311,6 @@ namespace SPCaemucals.Data.Migrations
                         column: x => x.UpdatedBy,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Parcels",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
-                    SaleManId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    DeliveryManId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ParcelStatus = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Parcels", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Parcels_AspNetUsers_DeliveryManId",
-                        column: x => x.DeliveryManId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Parcels_AspNetUsers_SaleManId",
-                        column: x => x.SaleManId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Parcels_Customers_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -329,20 +357,67 @@ namespace SPCaemucals.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Parcels",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    CustomerId = table.Column<int>(type: "int", nullable: false),
+                    SaleManId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DeliveryManId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ParcelStatus = table.Column<int>(type: "int", nullable: false),
+                    CashOnDelivery = table.Column<bool>(type: "bit", nullable: false, comment: "เก็บเงินปลายทาง Cash on delivery"),
+                    DeliveryVendorId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Parcels", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Parcels_AspNetUsers_DeliveryManId",
+                        column: x => x.DeliveryManId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Parcels_AspNetUsers_SaleManId",
+                        column: x => x.SaleManId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Parcels_Customers_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Parcels_DeliveryVendors_DeliveryVendorId",
+                        column: x => x.DeliveryVendorId,
+                        principalTable: "DeliveryVendors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Detail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    StandardPrice = table.Column<decimal>(type: "decimal(18,4)", nullable: true),
+                    Multiplier = table.Column<decimal>(type: "decimal(18,4)", nullable: false, defaultValue: 1.00m),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     UpdatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedBy = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    SubstituteProductId = table.Column<int>(type: "int", nullable: true),
+                    UnitOfMeasurementId = table.Column<int>(type: "int", nullable: false),
+                    VendorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -363,6 +438,22 @@ namespace SPCaemucals.Data.Migrations
                         principalTable: "Categories",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Products_Products_SubstituteProductId",
+                        column: x => x.SubstituteProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Products_UnitOfMeasurements_UnitOfMeasurementId",
+                        column: x => x.UnitOfMeasurementId,
+                        principalTable: "UnitOfMeasurements",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Products_Vendors_VendorId",
+                        column: x => x.VendorId,
+                        principalTable: "Vendors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -388,9 +479,9 @@ namespace SPCaemucals.Data.Migrations
                 name: "ProductMoveHistories",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
                     Change = table.Column<int>(type: "int", nullable: false),
                     QuantityBeforeChange = table.Column<int>(type: "int", nullable: false),
                     QuantityAfterChange = table.Column<int>(type: "int", nullable: false),
@@ -499,6 +590,16 @@ namespace SPCaemucals.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "DeliveryVendors",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Flash" },
+                    { 2, "DHL" },
+                    { 3, "ไปรษณีย์ไทย" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Provinces",
                 columns: new[] { "Id", "ThaiName" },
                 values: new object[,]
@@ -583,9 +684,18 @@ namespace SPCaemucals.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Titles",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1, "นาย" },
+                    { 2, "นางสาว" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "CompanyId", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", 0, 1, "4662ea93-dc10-4952-b797-7a225f02ee5d", "admin@sw.com", true, "John", "Doe", false, null, "ADMIN@SW.COM", "S&P_01", "AQAAAAIAAYagAAAAEBtf9nKQgPMI+OG0Dx5DKBL/T0p6uschu7hdzcD/OBkPBxRW7rzjBvSp+Q+o+hjFSw==", "0918131505", false, "", false, "S&P_01" });
+                values: new object[] { "1", 0, 1, "845df1f7-ed82-489d-9f00-c5e0ab249bb0", "admin@sw.com", true, "John", "Doe", false, null, "ADMIN@SW.COM", "S&P_01", "AQAAAAIAAYagAAAAENdz+/DvoVSwvinwmOLYBaBRm6KEXxxYPWBQsoOFokqh2ooGrqfeODeV97o8ceeFSg==", "0918131505", false, "", false, "S&P_01" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -672,6 +782,11 @@ namespace SPCaemucals.Data.Migrations
                 column: "UpdatedBy");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Customers_TitleId",
+                table: "Customers",
+                column: "TitleId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Districts_ProvinceId",
                 table: "Districts",
                 column: "ProvinceId");
@@ -685,6 +800,11 @@ namespace SPCaemucals.Data.Migrations
                 name: "IX_Parcels_DeliveryManId",
                 table: "Parcels",
                 column: "DeliveryManId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Parcels_DeliveryVendorId",
+                table: "Parcels",
+                column: "DeliveryVendorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Parcels_SaleManId",
@@ -727,9 +847,26 @@ namespace SPCaemucals.Data.Migrations
                 column: "CreatedById");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Products_SubstituteProductId",
+                table: "Products",
+                column: "SubstituteProductId",
+                unique: true,
+                filter: "[SubstituteProductId] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_UnitOfMeasurementId",
+                table: "Products",
+                column: "UnitOfMeasurementId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Products_UpdatedBy",
                 table: "Products",
                 column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Products_VendorId",
+                table: "Products",
+                column: "VendorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshToken_UserId",
@@ -782,13 +919,25 @@ namespace SPCaemucals.Data.Migrations
                 name: "Customers");
 
             migrationBuilder.DropTable(
+                name: "DeliveryVendors");
+
+            migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
                 name: "SubDistricts");
 
             migrationBuilder.DropTable(
+                name: "Titles");
+
+            migrationBuilder.DropTable(
                 name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "UnitOfMeasurements");
+
+            migrationBuilder.DropTable(
+                name: "Vendors");
 
             migrationBuilder.DropTable(
                 name: "Districts");

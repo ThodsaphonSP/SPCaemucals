@@ -12,7 +12,7 @@ using SPCaemucals.Data.Identities;
 namespace SPCaemucals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240212134448_Initial")]
+    [Migration("20240214030725_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -121,6 +121,27 @@ namespace SPCaemucals.Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
+                    b.Property<string>("AccountNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CreditDay")
+                        .HasColumnType("int")
+                        .HasComment("เครดิต-วัน");
+
+                    b.Property<decimal>("CreditLimit")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<string>("CustomerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("CustomerType")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Discount")
+                        .HasColumnType("decimal(18, 4)");
+
                     b.Property<string>("FirstName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -133,9 +154,49 @@ namespace SPCaemucals.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("TitleId")
+                        .HasColumnType("int")
+                        .HasComment("คำนำหน้าชื่อ");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("TitleId");
+
                     b.ToTable("Customers");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.DeliveryVendor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DeliveryVendors");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Flash"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "DHL"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "ไปรษณีย์ไทย"
+                        });
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Identities.Parcel", b =>
@@ -143,11 +204,18 @@ namespace SPCaemucals.Data.Migrations
                     b.Property<int>("Id")
                         .HasColumnType("int");
 
+                    b.Property<bool>("CashOnDelivery")
+                        .HasColumnType("bit")
+                        .HasComment("เก็บเงินปลายทาง Cash on delivery");
+
                     b.Property<int>("CustomerId")
                         .HasColumnType("int");
 
                     b.Property<string>("DeliveryManId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("DeliveryVendorId")
+                        .HasColumnType("int");
 
                     b.Property<int>("ParcelStatus")
                         .HasColumnType("int");
@@ -162,9 +230,37 @@ namespace SPCaemucals.Data.Migrations
 
                     b.HasIndex("DeliveryManId");
 
+                    b.HasIndex("DeliveryVendorId");
+
                     b.HasIndex("SaleManId");
 
                     b.ToTable("Parcels");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Title", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Titles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "นาย"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "นางสาว"
+                        });
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.Address", b =>
@@ -352,7 +448,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "4662ea93-dc10-4952-b797-7a225f02ee5d",
+                            ConcurrencyStamp = "845df1f7-ed82-489d-9f00-c5e0ab249bb0",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -360,7 +456,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBtf9nKQgPMI+OG0Dx5DKBL/T0p6uschu7hdzcD/OBkPBxRW7rzjBvSp+Q+o+hjFSw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAENdz+/DvoVSwvinwmOLYBaBRm6KEXxxYPWBQsoOFokqh2ooGrqfeODeV97o8ceeFSg==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
@@ -393,9 +489,8 @@ namespace SPCaemucals.Data.Migrations
 
             modelBuilder.Entity("SPCaemucals.Data.Models.Category", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("CreatedById")
                         .IsRequired()
@@ -500,12 +595,11 @@ namespace SPCaemucals.Data.Migrations
 
             modelBuilder.Entity("SPCaemucals.Data.Models.Product", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Code")
                         .IsRequired()
@@ -518,8 +612,16 @@ namespace SPCaemucals.Data.Migrations
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Detail")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
+
+                    b.Property<decimal>("Multiplier")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("decimal(18, 4)")
+                        .HasDefaultValue(1.00m);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -531,11 +633,23 @@ namespace SPCaemucals.Data.Migrations
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("StandardPrice")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<int?>("SubstituteProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UnitOfMeasurementId")
+                        .HasColumnType("int");
+
                     b.Property<string>("UpdatedBy")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("VendorId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -543,19 +657,26 @@ namespace SPCaemucals.Data.Migrations
 
                     b.HasIndex("CreatedById");
 
+                    b.HasIndex("SubstituteProductId")
+                        .IsUnique()
+                        .HasFilter("[SubstituteProductId] IS NOT NULL");
+
+                    b.HasIndex("UnitOfMeasurementId");
+
                     b.HasIndex("UpdatedBy");
+
+                    b.HasIndex("VendorId");
 
                     b.ToTable("Products");
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.ProductMoveHistory", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
-                    b.Property<Guid>("CategoryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
 
                     b.Property<int>("Change")
                         .HasColumnType("int");
@@ -573,8 +694,8 @@ namespace SPCaemucals.Data.Migrations
                     b.Property<int>("MoveType")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
 
                     b.Property<int>("QuantityAfterChange")
                         .HasColumnType("int");
@@ -1057,6 +1178,34 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("SubDistricts");
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Models.UnitOfMeasurement", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UnitOfMeasurements");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.Vendor", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Vendors");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("SPCaemucals.Data.Models.ApplicationRole", null)
@@ -1093,6 +1242,16 @@ namespace SPCaemucals.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Customer", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Identities.Title", "Title")
+                        .WithMany("Customers")
+                        .HasForeignKey("TitleId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("Title");
+                });
+
             modelBuilder.Entity("SPCaemucals.Data.Identities.Parcel", b =>
                 {
                     b.HasOne("SPCaemucals.Data.Identities.Customer", "Customer")
@@ -1101,10 +1260,16 @@ namespace SPCaemucals.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", "DeliveryMan")
+                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", "ShippingCoordinator")
                         .WithMany("ShippedPackage")
                         .HasForeignKey("DeliveryManId")
                         .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("SPCaemucals.Data.Identities.DeliveryVendor", "DeliveryVendor")
+                        .WithMany("Parcels")
+                        .HasForeignKey("DeliveryVendorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("SPCaemucals.Data.Models.ApplicationUser", "SaleMan")
                         .WithMany("SoldItem")
@@ -1114,9 +1279,11 @@ namespace SPCaemucals.Data.Migrations
 
                     b.Navigation("Customer");
 
-                    b.Navigation("DeliveryMan");
+                    b.Navigation("DeliveryVendor");
 
                     b.Navigation("SaleMan");
+
+                    b.Navigation("ShippingCoordinator");
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.Address", b =>
@@ -1242,12 +1409,33 @@ namespace SPCaemucals.Data.Migrations
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
+                    b.HasOne("SPCaemucals.Data.Models.Product", "SubstituteProduct")
+                        .WithOne()
+                        .HasForeignKey("SPCaemucals.Data.Models.Product", "SubstituteProductId")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.HasOne("SPCaemucals.Data.Models.UnitOfMeasurement", "UnitOfMeasurement")
+                        .WithMany("Product")
+                        .HasForeignKey("UnitOfMeasurementId");
+
                     b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
+                    b.HasOne("SPCaemucals.Data.Models.Vendor", "Vendor")
+                        .WithMany("Product")
+                        .HasForeignKey("VendorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Category");
+
+                    b.Navigation("SubstituteProduct");
+
+                    b.Navigation("UnitOfMeasurement");
+
+                    b.Navigation("Vendor");
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.ProductMoveHistory", b =>
@@ -1309,6 +1497,16 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("Parcels");
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Identities.DeliveryVendor", b =>
+                {
+                    b.Navigation("Parcels");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Title", b =>
+                {
+                    b.Navigation("Customers");
+                });
+
             modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationRole", b =>
                 {
                     b.Navigation("UserRoles");
@@ -1366,6 +1564,16 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("Addresses");
 
                     b.Navigation("PostalCodes");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.UnitOfMeasurement", b =>
+                {
+                    b.Navigation("Product");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.Vendor", b =>
+                {
+                    b.Navigation("Product");
                 });
 #pragma warning restore 612, 618
         }

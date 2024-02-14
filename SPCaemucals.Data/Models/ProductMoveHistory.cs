@@ -7,10 +7,10 @@ namespace SPCaemucals.Data.Models;
 public class ProductMoveHistory 
 {
     [ForeignKey(nameof(ProductId))]
-    public Guid ProductId { get; set; }
+    public int ProductId { get; set; }
     
     public virtual Product Product { get; set; }
-    public Guid CategoryId { get; set; }
+    public int CategoryId { get; set; }
     [ForeignKey(nameof(CategoryId))]
     public virtual Category Category { get; set; }
     public int Change { get; set; } // This field already indicates the difference (before and after)
@@ -18,7 +18,7 @@ public class ProductMoveHistory
     public int QuantityAfterChange { get; set; } // New field to track quantity after the change
     public MoveType MoveType { get; set; }
     
-    public Guid Id { get; set; }
+    public int Id { get; set; }
     public DateTime CreatedDate { get; set; }
     public string CreatedById { get; set; }
     public DateTime UpdatedDate { get; set; }

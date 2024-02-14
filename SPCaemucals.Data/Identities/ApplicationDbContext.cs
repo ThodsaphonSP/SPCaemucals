@@ -36,11 +36,12 @@ namespace SPCaemucals.Data.Identities
         public DbSet<Parcel> Parcels { get; set; }
         
         public DbSet<Title> Titles { get; set; }
+        public DbSet<Vendor> Vendors { get; set; }
+        public DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
         
-        
-        
-        
-        
+        public DbSet<DeliveryVendor> DeliveryVendors { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -61,7 +62,7 @@ namespace SPCaemucals.Data.Identities
 
             ConfigureProductEntity(modelBuilder);
             ConfigureCategoryEntity(modelBuilder);
-            ConfigureProductEntity(modelBuilder);
+
 
             ConfigProvince(modelBuilder);
             ConfigDistrict(modelBuilder);
@@ -78,6 +79,35 @@ namespace SPCaemucals.Data.Identities
             ConfigTitle(modelBuilder);
 
             SeedTitle(modelBuilder);
+            
+            ConfigureUnitOfMeasurement(modelBuilder);
+            ConfigVendor(modelBuilder);
+
+            SeedDeliveryVendor(modelBuilder);
+        }
+
+        private void SeedDeliveryVendor(ModelBuilder modelBuilder)
+        {
+            List<DeliveryVendor> vendors = new List<DeliveryVendor>()
+            {
+                new DeliveryVendor()
+                {
+                    Id = 1,
+                    Name = "Flash"
+                },
+                new DeliveryVendor()
+                {
+                    Id = 2,
+                    Name = "DHL"
+                },
+                new DeliveryVendor()
+                {
+                    Id = 3,
+                    Name = "ไปรษณีย์ไทย"
+                },
+                
+            };
+            modelBuilder.Entity<DeliveryVendor>().HasData(vendors);
         }
 
         private void SeedProvinces(ModelBuilder modelBuilder)
@@ -164,6 +194,35 @@ namespace SPCaemucals.Data.Identities
             };
             modelBuilder.Entity<Province>()
                 .HasData(provinces);
+        }
+
+        private void ConfigureUnitOfMeasurement(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<UnitOfMeasurement>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                
+                entity.HasMany<Product>(e => e.Product)
+                    .WithOne(e => e.UnitOfMeasurement)
+                    .IsRequired(false)
+                    .HasForeignKey(e => e.UnitOfMeasurementId);
+            });
+        }
+
+        public void ConfigVendor(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Vendor>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+
+                entity.HasMany<Product>(e => e.Product)
+                    .WithOne(e=>e.Vendor)
+                    .HasForeignKey(e=>e.VendorId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
 
 
@@ -280,6 +339,7 @@ namespace SPCaemucals.Data.Identities
                 new ApplicationRole { Id = "3", Name = "JSaleRole", NormalizedName = "JSALEROLE" },
                 new ApplicationRole { Id = "4", Name = "RSaleRole", NormalizedName = "RSALEROLE" },
                 new ApplicationRole { Id = "5", Name = "AccountRole", NormalizedName = "ACCOUNTROLE" }
+                ,new ApplicationRole(){ Id = "6" ,Name = "ShippingCoordinatorRole", NormalizedName = "ShippingCoordinatorRole".ToUpper()}
             };
 
             modelBuilder.Entity<ApplicationRole>().HasData(customRoles);
@@ -307,6 +367,8 @@ namespace SPCaemucals.Data.Identities
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Product>().Property(e => e.Id).ValueGeneratedNever();
+
             modelBuilder.Entity<Product>()
                 .HasOne<ApplicationUser>()
                 .WithMany()
@@ -320,11 +382,20 @@ namespace SPCaemucals.Data.Identities
                 .HasForeignKey(x => x.UpdatedBy)
                 .OnDelete(DeleteBehavior.NoAction);
             
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.SubstituteProduct)
+                .WithOne()
+                .OnDelete(DeleteBehavior.NoAction);
+  
+            
  
             
             modelBuilder.Entity<Product>()
                 .Property(p => p.Price)
                 .HasColumnType("decimal(18,2)");
+
+
+            modelBuilder.Entity<Product>().Property(b => b.Multiplier).HasDefaultValue(1.00m);
         }
         
         private void ConfigureProductMoveHistoryEntity(ModelBuilder modelBuilder)
@@ -334,6 +405,8 @@ namespace SPCaemucals.Data.Identities
                 .WithMany(e => e.ProductMoveHistories)
                 .HasForeignKey(e => e.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<ProductMoveHistory>().Property(e => e.Id).ValueGeneratedNever();
             
             modelBuilder.Entity<ProductMoveHistory>()
                 .HasOne(pmh => pmh.Category)
@@ -371,6 +444,8 @@ namespace SPCaemucals.Data.Identities
             modelBuilder.Entity<ProductMoveHistory>()
                 .Property(e => e.MoveType)
                 .HasConversion<int>();
+
+            modelBuilder.Entity<Category>().Property(e => e.Id).ValueGeneratedNever();
             
             modelBuilder.Entity<Category>()
                 .HasOne<ApplicationUser>()
@@ -548,10 +623,16 @@ namespace SPCaemucals.Data.Identities
                     .OnDelete(DeleteBehavior.Restrict);
                 
                 
-                entity.HasOne<ApplicationUser>(e => e.DeliveryMan)
+                entity.HasOne<ApplicationUser>(e => e.ShippingCoordinator)
                     .WithMany(e => e.ShippedPackage)
                     .HasForeignKey(e => e.DeliveryManId)
                     .IsRequired(false)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne(e => e.DeliveryVendor)
+                    .WithMany(e => e.Parcels)
+                    .IsRequired()
+                    .HasForeignKey(e => e.DeliveryVendorId)
                     .OnDelete(DeleteBehavior.Restrict);
             });
             
@@ -559,6 +640,15 @@ namespace SPCaemucals.Data.Identities
                 .Property(e => e.ParcelStatus)
                 .HasConversion<int>();
             
+        }
+
+        private void ConfigDeliveryVendor(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DeliveryVendor>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.Property(e => e.Id).ValueGeneratedNever();
+            });
         }
 
         
