@@ -2,6 +2,7 @@ using AutoMapper;
 using SPCaemucals.Backend.Controllers;
 using SPCaemucals.Backend.Dto.Role;
 using SPCaemucals.Backend.Filters;
+using SPCaemucals.Data.Identities;
 using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Dto.AutoMapperProfiel;
@@ -30,12 +31,14 @@ public class MapProFile:Profile
         CreateMap<District, DistrictDTO>()
             .ForMember(dto => dto.SubDistricts, opt => opt.MapFrom(src => src.SubDistricts));
 
-            
-            
-        
+
+
+        CreateMap<UnitOfMeasurement, UnitOfMeasurementDTO>().ReverseMap();
         
         
         CreateMap<SPCaemucals.Data.Models.Company, SPCaemucals.Backend.Dto.CompanyDTO.Company>().ReverseMap();
-        
+
+        CreateMap<DeliveryVendor, DeliveryVendorDTO>().ReverseMap();
+
     }
 }
