@@ -1,7 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using SPCaemucals.Backend.Dto;
 using SPCaemucals.Backend.Dto.Product;
 using SPCaemucals.Backend.Filters;
 using SPCaemucals.Backend.Services;
+using SPCaemucals.Data.Identities;
 
 namespace SPCaemucals.Backend.Controllers;
 
@@ -10,30 +14,34 @@ namespace SPCaemucals.Backend.Controllers;
 public class ProductController : ControllerBase
 {
     private readonly IProductService _productService;
+    private readonly ApplicationDbContext _dbContext;
+    private readonly IMapper _mapper;
 
-    public ProductController(IProductService productService)
+    public ProductController(IProductService productService,ApplicationDbContext dbContext,IMapper mapper)
     {
         _productService = productService;
+        _dbContext = dbContext;
+        _mapper = mapper;
     }
 
-    [HttpPost(nameof(GetPaged))]
-    public async Task<IActionResult> GetPaged([FromQuery] PaginationFilter filter, [FromBody] SearchBody body)
-    {
-        var response = await _productService.GetPagedAsync(filter, body);
-        return Ok(response);
-        
-    }
+   
 
     [HttpGet]
+    [ProducesResponseType(StatusCodes.Status200OK,Type = typeof(ProductDTO))]
     public async Task<IActionResult> Get([FromQuery] int id)
     {
-        var response = await _productService.GetAsync(id);
-        if(response is null)
+
+        var query = _dbContext.Products.AsQueryable();
+        if (id!= 0)
         {
-            return NotFound();
+            query = query.Where(p => p.Id == id);
         }
 
-        return Ok(response);
+        var products = await query.ToListAsync();
+
+        var result = _mapper.Map<List<ProductDTO>>(products);
+
+        return Ok(result);
     }
 
     [HttpPost]
