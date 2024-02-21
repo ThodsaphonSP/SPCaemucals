@@ -9,13 +9,13 @@ namespace SPCaemucals.Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VendorDelivery : ControllerBase
+    public class VendorDeliveryController : ControllerBase
     {
-        private readonly ILogger<VendorDelivery> _logger;
+        private readonly ILogger<VendorDeliveryController> _logger;
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public VendorDelivery(ILogger<VendorDelivery> logger,ApplicationDbContext dbContext,IMapper mapper)
+        public VendorDeliveryController(ILogger<VendorDeliveryController> logger,ApplicationDbContext dbContext,IMapper mapper)
         {
             _logger = logger;
             _dbContext = dbContext;
