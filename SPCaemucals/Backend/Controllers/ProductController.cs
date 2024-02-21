@@ -1,11 +1,13 @@
-﻿using AutoMapper;
+﻿using System.Data.Common;
+using System.Linq.Expressions;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using SPCaemucals.Backend.Dto;
-using SPCaemucals.Backend.Dto.Product;
-using SPCaemucals.Backend.Filters;
 using SPCaemucals.Backend.Services;
 using SPCaemucals.Data.Identities;
+using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Controllers;
 
@@ -13,12 +15,14 @@ namespace SPCaemucals.Backend.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
+    private readonly ILogger<ProductController> _logger;
     private readonly IProductService _productService;
     private readonly ApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
 
-    public ProductController(IProductService productService,ApplicationDbContext dbContext,IMapper mapper)
+    public ProductController(ILogger<ProductController> logger,IProductService productService,ApplicationDbContext dbContext,IMapper mapper)
     {
+        _logger = logger;
         _productService = productService;
         _dbContext = dbContext;
         _mapper = mapper;
@@ -44,11 +48,96 @@ public class ProductController : ControllerBase
         return Ok(result);
     }
 
+
+    /// <summary>
+    /// Creates a new product in the system.
+    /// </summary>
+    /// <param name="body">A DTO object representing the product to be created.</param>
+    /// <returns>A task that represents the asynchronous operation. The task result is an IActionResult
+    /// that represents a result of the web request.</returns>
+    /// <response code="200">Product created successfully.</response>
+    /// <response code="500">If there is a database update exception.</response>
     [HttpPost]
-    public async Task<IActionResult> CreateProduct([FromBody] CreateProduct body)
+    public async Task<IActionResult> CreateProduct([FromBody] ProductDTO body)
+{
+    return await _dbContext.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
     {
-        return Ok();
+        using (var transaction = _dbContext.Database.BeginTransaction())
+        {
+            try
+            {
+               return await CreateProductInternal(body, transaction);
+            }
+            catch (DbUpdateException ex) 
+            {
+               return HandleException(ex, transaction);
+            }
+        }
+    });
+}
+
+    private async Task<IActionResult> CreateProductInternal(ProductDTO body,
+        Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction)
+    {
+        _logger.LogInformation("Product creation initiated.");
+        var product = _mapper.Map<Product>(body);
+        if (IsProductNotExist(product))
+        {
+            AssignNextId(_dbContext.Products, product, nameof(product.Id));
+            
+            _dbContext.Products.Add(product);
+            await _dbContext.SaveChangesAsync();
+            var productDTO = _mapper.Map<ProductDTO>(product);
+            transaction.Commit();
+            _logger.LogInformation("Product creation successful. Product Id: {ProductId}", productDTO.Id);
+            return CreatedAtAction(nameof(CreateProduct), new { id = productDTO.Id }, productDTO);
+        }
+        else
+        {
+            _logger.LogInformation("Product already exists. Cannot create duplicate product.");
+            return BadRequest("Product already exists.");
+        }
     }
+
+    public void AssignNextId<T>(DbSet<T> dbSet, T entity, string idPropertyString) where T : class
+    {
+        var entityType = typeof(T);
+        var idProperty = entityType.GetProperty(idPropertyString);
+
+        // Build the LINQ expression dynamically
+        var param = Expression.Parameter(entityType, "p");
+        var body = Expression.Property(param, idProperty);
+        var sortExpression = Expression.Lambda<Func<T, int>>(body, param);
+
+        var lastEntity = dbSet.OrderByDescending(sortExpression).FirstOrDefault();
+
+        if (lastEntity != null)
+        {
+            var lastId = (int)idProperty.GetValue(lastEntity);
+            idProperty.SetValue(entity, lastId + 1);
+        }
+        else
+        {
+            idProperty.SetValue(entity, 1);
+        }
+    }
+
+private bool IsProductNotExist(Product product)
+{
+    return !_dbContext.Products.Any(x => x.Name == product.Name);
+}
+
+private IActionResult HandleException(DbUpdateException ex, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction)
+{
+    const string LogMessage = "Product creation failed. Exception: {ExceptionMessage}, Inner Exception: {InnerExceptionMessage}";
+    const string ErrorMessage = "Internal server error: {ex.Message}, Inner Exception: {innerExceptionMessage}";
+    const int InternalServerErrorStatusCode = 500;
+
+    transaction.Rollback();
+    var innerExceptionMessage = ex.InnerException != null ? ex.InnerException.Message : string.Empty;
+    _logger.LogError(ex, LogMessage, ex.Message, innerExceptionMessage);
+    return StatusCode(InternalServerErrorStatusCode, string.Format(ErrorMessage, ex.Message, innerExceptionMessage));
+}
 
     [HttpPut]
     public async Task<IActionResult> UpdateProduct()
