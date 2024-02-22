@@ -12,7 +12,7 @@ using SPCaemucals.Data.Identities;
 namespace SPCaemucals.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240222040133_Initial")]
+    [Migration("20240222053816_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -125,15 +125,15 @@ namespace SPCaemucals.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
                     b.Property<int>("CreditDay")
                         .HasColumnType("int")
                         .HasComment("เครดิต-วัน");
 
                     b.Property<decimal>("CreditLimit")
                         .HasColumnType("decimal(18, 4)");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
 
                     b.Property<int>("CustomerType")
                         .HasColumnType("int");
@@ -159,7 +159,7 @@ namespace SPCaemucals.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CustomerId")
+                    b.HasIndex("AddressId")
                         .IsUnique();
 
                     b.HasIndex("TitleId");
@@ -457,7 +457,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "48743d04-96da-4b0d-b2a5-cf4144dc164e",
+                            ConcurrencyStamp = "90428129-b5d7-4645-9a19-18e7421b949d",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -465,7 +465,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFSIbDBz5yo+CcGfJDA3098vrkTgW2Jih6HyTXjXwZwySGALwEeYbjWG5TE0DyFYCQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHVm/1sSs2OjYRbeCx4vNLm13u2Ht8H1yFP83u9Y5L9NnN+3pS7SHMY/Tk9oWVM7QQ==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
@@ -1278,7 +1278,7 @@ namespace SPCaemucals.Data.Migrations
                 {
                     b.HasOne("SPCaemucals.Data.Models.Address", "Addresses")
                         .WithOne("Customer")
-                        .HasForeignKey("SPCaemucals.Data.Identities.Customer", "CustomerId")
+                        .HasForeignKey("SPCaemucals.Data.Identities.Customer", "AddressId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 

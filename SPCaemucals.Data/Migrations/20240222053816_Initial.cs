@@ -265,7 +265,6 @@ namespace SPCaemucals.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false),
-                    CustomerId = table.Column<int>(type: "int", nullable: false),
                     CustomerType = table.Column<int>(type: "int", nullable: false),
                     TitleId = table.Column<int>(type: "int", nullable: false, comment: "คำนำหน้าชื่อ"),
                     CreditDay = table.Column<int>(type: "int", nullable: false, comment: "เครดิต-วัน"),
@@ -274,14 +273,15 @@ namespace SPCaemucals.Data.Migrations
                     AccountNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNo = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PhoneNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Customers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Customers_Addresses_CustomerId",
-                        column: x => x.CustomerId,
+                        name: "FK_Customers_Addresses_AddressId",
+                        column: x => x.AddressId,
                         principalTable: "Addresses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
@@ -727,7 +727,7 @@ namespace SPCaemucals.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "AddressId", "CompanyId", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", 0, null, 1, "48743d04-96da-4b0d-b2a5-cf4144dc164e", "admin@sw.com", true, "John", "Doe", false, null, "ADMIN@SW.COM", "S&P_01", "AQAAAAIAAYagAAAAEFSIbDBz5yo+CcGfJDA3098vrkTgW2Jih6HyTXjXwZwySGALwEeYbjWG5TE0DyFYCQ==", "0918131505", false, "", false, "S&P_01" });
+                values: new object[] { "1", 0, null, 1, "90428129-b5d7-4645-9a19-18e7421b949d", "admin@sw.com", true, "John", "Doe", false, null, "ADMIN@SW.COM", "S&P_01", "AQAAAAIAAYagAAAAEHVm/1sSs2OjYRbeCx4vNLm13u2Ht8H1yFP83u9Y5L9NnN+3pS7SHMY/Tk9oWVM7QQ==", "0918131505", false, "", false, "S&P_01" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -816,9 +816,9 @@ namespace SPCaemucals.Data.Migrations
                 column: "UpdatedBy");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Customers_CustomerId",
+                name: "IX_Customers_AddressId",
                 table: "Customers",
-                column: "CustomerId",
+                column: "AddressId",
                 unique: true);
 
             migrationBuilder.CreateIndex(

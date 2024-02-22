@@ -620,7 +620,7 @@ namespace SPCaemucals.Data.Identities
                 
                 entity.HasOne<Address>(e => e.Addresses)
                 .WithOne(e => e.Customer)
-                .HasForeignKey<Customer>(e => e.CustomerId)
+                .HasForeignKey<Customer>(e => e.AddressId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
