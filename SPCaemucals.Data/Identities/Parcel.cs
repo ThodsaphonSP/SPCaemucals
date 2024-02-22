@@ -20,6 +20,7 @@ public class Parcel
     public virtual Customer Customer { get; set; }
     public DeliveryVendor DeliveryVendor { get; set; }
     public int DeliveryVendorId { get; set; }
+    public virtual IEnumerable<ProductParcel>? ProductParcels { get; set; }
 }
 
 public class DeliveryVendor

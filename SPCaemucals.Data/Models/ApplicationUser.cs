@@ -18,10 +18,14 @@ public class ApplicationUser:IdentityUser
 
     public int CompanyId { get; set; }
 
+    public int? AddressId { get; set; }
+
     // Navigation property
     public Company Company { get; set; }
     
     //Navigation propery
+
+    public virtual Address? Address { get; set; }
     public virtual ICollection<ApplicationUserRole> UserRoles { get; set; } 
     public List<RefreshToken> RefreshTokens { get; set; }
     

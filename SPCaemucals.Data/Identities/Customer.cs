@@ -9,7 +9,7 @@ namespace SPCaemucals.Data.Identities;
 public class Customer
 {
     public int Id { get; set; }
-    public string CustomerId { get; set; }
+    public int CustomerId { get; set; }
     public CustomerType CustomerType { get; set; }
 
     [Comment("คำนำหน้าชื่อ")]
@@ -27,7 +27,7 @@ public class Customer
     public string LastName { get; set; }
     [Phone]
     public string PhoneNo { get; set; }
-    public virtual ICollection<Address> Addresses { get; set; }
+    public virtual Address Addresses { get; set; }
         
     public virtual ICollection<Parcel> Parcels { get; set; }
 }

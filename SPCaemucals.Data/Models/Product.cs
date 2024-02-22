@@ -44,6 +44,7 @@ public class Product
     public virtual ICollection<ProductMoveHistory> ProductMoveHistories { get; set; }
     public int UnitOfMeasurementId { get; set; }
     public int VendorId { get; set; }
+    public virtual IEnumerable<ProductParcel>? ProductParcels { get; set; }
 }
 
 public class Vendor

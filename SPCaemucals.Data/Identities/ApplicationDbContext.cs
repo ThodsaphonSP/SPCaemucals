@@ -40,6 +40,7 @@ namespace SPCaemucals.Data.Identities
         public DbSet<UnitOfMeasurement> UnitOfMeasurements { get; set; }
         
         public DbSet<DeliveryVendor> DeliveryVendors { get; set; }
+        public DbSet<ProductParcel> ProductParcels { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -84,6 +85,30 @@ namespace SPCaemucals.Data.Identities
             ConfigVendor(modelBuilder);
 
             SeedDeliveryVendor(modelBuilder);
+
+            ConfigProductParcel(modelBuilder);
+        }
+
+        private void ConfigProductParcel(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ProductParcel>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id).ValueGeneratedNever();
+                
+                entity.HasOne<Product>(e => e.Product)
+                    .WithMany(e => e.ProductParcels)
+                    .HasForeignKey(e => e.ProductId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+
+                entity.HasOne<Parcel>(e => e.Parcel)
+                    .WithMany(e => e.ProductParcels)
+                    .HasForeignKey(e => e.ParcelId)
+                    .IsRequired()
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
 
         private void SeedDeliveryVendor(ModelBuilder modelBuilder)
@@ -237,6 +262,14 @@ namespace SPCaemucals.Data.Identities
                 .HasOne(u => u.Company)
                 .WithMany(c => c.Users)
                 .HasForeignKey(u => u.CompanyId);
+
+            modelBuilder.Entity<ApplicationUser>(entity =>
+            {
+                entity.HasOne<Address>(e => e.Address)
+                    .WithOne(e => e.Employee)
+                    .HasForeignKey<ApplicationUser>(e => e.AddressId)
+                    .IsRequired(false);
+            });
         }
 
         private void ConfigureApplicationUserRoleEntity(ModelBuilder modelBuilder)
@@ -572,7 +605,9 @@ namespace SPCaemucals.Data.Identities
                     .HasForeignKey(x => x.PostalCodeCodeId)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
-                
+
+
+
             });
         }
 
@@ -583,9 +618,9 @@ namespace SPCaemucals.Data.Identities
                 entity.HasKey(e => e.Id);
                 entity.Property(e => e.Id).ValueGeneratedNever();
                 
-                entity.HasMany<Address>(e => e.Addresses)
+                entity.HasOne<Address>(e => e.Addresses)
                 .WithOne(e => e.Customer)
-                .HasForeignKey(e => e.CustomerId)
+                .HasForeignKey<Customer>(e => e.CustomerId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
