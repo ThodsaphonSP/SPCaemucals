@@ -13,13 +13,13 @@ namespace SPCaemucals.Backend.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class Address : ControllerBase
+    public class AddressController : ControllerBase
     {
-        private readonly ILogger<Address> _logger;
+        private readonly ILogger<AddressController> _logger;
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public Address(ILogger<Address> logger,ApplicationDbContext dbContext,IMapper mapper)
+        public AddressController(ILogger<AddressController> logger,ApplicationDbContext dbContext,IMapper mapper)
         {
             _logger = logger;
             _dbContext = dbContext;

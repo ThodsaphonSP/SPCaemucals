@@ -1,7 +1,11 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SPCaemucals.Backend.Dto.Model;
+using SPCaemucals.Data.Enum;
 using SPCaemucals.Data.Identities;
+using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Controllers
 {
@@ -11,12 +15,15 @@ namespace SPCaemucals.Backend.Controllers
     {
         private readonly ILogger<ParcelController> _logger;
         private readonly ApplicationDbContext _dbContext;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ParcelController(ILogger<ParcelController> logger,ApplicationDbContext dbContext)
+        public ParcelController(ILogger<ParcelController> logger, ApplicationDbContext dbContext,UserManager<ApplicationUser> userManager)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _userManager = userManager;
         }
+
         // GET: api/<ParcelController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -36,34 +43,64 @@ namespace SPCaemucals.Backend.Controllers
         /// </summary>
         /// <param name="model">The parcel form data.</param>
         [HttpPost]
-        public IActionResult Post([FromBody] ParcelForm model)
+        public async Task<IActionResult> Post([FromBody] ParcelForm model)
         {
-            
+           return await _dbContext.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
+            {
+                using (var transaction = _dbContext.Database.BeginTransaction())
+                {
+                    try
+                    {
+                        var receiver = model.Receive;
+                        //check whether customer exists
+                        Customer? customer = await _dbContext.Customers.Where(x => x.PhoneNo == receiver.PhoneNo)
+                            .Include(x => x.Addresses)
+                            .FirstOrDefaultAsync();
+                        Customer newCustomer = null;
+                        Address newCustomerAddress = null;
+                        //save address for customer and app user
 
-            var sender = model.Sender;
+                        if (customer == null)
+                        {
+                            newCustomerAddress = receiver.GetAddress();
+                            newCustomer = receiver.GetCustomer();
+                            newCustomer.Addresses = newCustomerAddress;
+                        }
 
-            var receiver = model.Receive;
-            
-            
-            //creat customer
-            
-            
-            //save address for customer and app user
-            var receiverAddress = new Data.Models.Address();
-            
-            //create parcel
-            
-            
-            // create product in parcel
-            
-            
-            // เก็บประวัติ ตัดสต๊อก
-            
-            
-            
-            
-            
-            return Ok();
+                        if (newCustomer != null && newCustomerAddress != null)
+                        {
+                            _dbContext.Customers.Add(newCustomer);
+                            await _dbContext.SaveChangesAsync();
+                        }
+
+                        var sender = model.Sender;
+                        ApplicationUser? saleman =
+                            await _userManager.Users.FirstOrDefaultAsync(x => x.PhoneNumber == sender.PhoneNo);
+
+                        if (saleman != null)
+                        {
+                            saleman.AddressId = null;
+                            saleman.Address = sender.GetAddress();
+                            _dbContext.Entry(saleman).State = EntityState.Modified;
+                            await _dbContext.SaveChangesAsync();
+                        }
+
+                        //create parcel
+                        //create product in parcel
+                        //store stock history
+                        //commit transaction
+                        transaction.Commit();
+                        return Ok();
+                    }
+                    catch (Exception)
+                    {
+                        //rollback transaction
+                        transaction.Rollback();
+                        //return error response
+                        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+                    }
+                }
+            });
         }
 
         // PUT api/<ParcelController>/5

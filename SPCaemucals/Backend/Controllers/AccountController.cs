@@ -25,7 +25,6 @@ namespace SPCaemucals.Backend.Controllers
         private readonly IMapper _mapper;
         private readonly ApplicationDbContext _appDbContext;
         private readonly IConfiguration _configuration;
-        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly ILogger<AccountController> _logger;
         private readonly CorrelationIdHelper _coreHelper;
 
@@ -39,7 +38,6 @@ namespace SPCaemucals.Backend.Controllers
             this._mapper = mapper;
             _appDbContext = appDbContext;
             _configuration = configuration;
-            _roleManager = roleManager;
             _logger = logger;
             _coreHelper = coreHelper;
         }
