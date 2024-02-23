@@ -8,6 +8,7 @@ using SPCaemucals.Backend.Dto;
 using SPCaemucals.Backend.Services;
 using SPCaemucals.Data.Identities;
 using SPCaemucals.Data.Models;
+using SPCaemucals.Data.Utility;
 
 namespace SPCaemucals.Backend.Controllers;
 
@@ -83,7 +84,8 @@ public class ProductController : ControllerBase
         var product = _mapper.Map<Product>(body);
         if (IsProductNotExist(product))
         {
-            AssignNextId(_dbContext.Products, product, nameof(product.Id));
+
+            _dbContext.Products.AssignNextId(product, nameof(product.Id));
             
             _dbContext.Products.Add(product);
             await _dbContext.SaveChangesAsync();
@@ -99,28 +101,7 @@ public class ProductController : ControllerBase
         }
     }
 
-    public void AssignNextId<T>(DbSet<T> dbSet, T entity, string idPropertyString) where T : class
-    {
-        var entityType = typeof(T);
-        var idProperty = entityType.GetProperty(idPropertyString);
 
-        // Build the LINQ expression dynamically
-        var param = Expression.Parameter(entityType, "p");
-        var body = Expression.Property(param, idProperty);
-        var sortExpression = Expression.Lambda<Func<T, int>>(body, param);
-
-        var lastEntity = dbSet.OrderByDescending(sortExpression).FirstOrDefault();
-
-        if (lastEntity != null)
-        {
-            var lastId = (int)idProperty.GetValue(lastEntity);
-            idProperty.SetValue(entity, lastId + 1);
-        }
-        else
-        {
-            idProperty.SetValue(entity, 1);
-        }
-    }
 
 private bool IsProductNotExist(Product product)
 {

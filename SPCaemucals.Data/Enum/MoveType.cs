@@ -17,6 +17,7 @@ public enum ParcelStatus
     Delivered,
     Returned,
     InTransit,
+    Ready
 }
 
 public enum CustomerType

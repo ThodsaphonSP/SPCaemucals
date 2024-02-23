@@ -11,36 +11,48 @@ public class ProductSeed
     {
         _dbContext = dbContext;
     }
-    public int CategoryId { get; set; } = 1;
+
 
     public string AdminPK { get; set; } = "1";
 
+    public Category Category { get; set; }
+
     public async Task SeedCategoryAndProductAsync()
     {
+        var strategy = _dbContext.Database.CreateExecutionStrategy();
 
-        if (!_dbContext.Vendors.Any())
+        await strategy.ExecuteAsync(async () =>
+        {
+            using var transaction = await _dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                  if (!_dbContext.Vendors.Any())
         {
             List<Vendor> vendors = new List<Vendor>()
             {
-                new Vendor() { Id = 1, Name = "Vendor A" },
-                new Vendor() { Id = 2, Name = "Vendor B" },
+                new Vendor() {  Name = "Vendor A" },
+                new Vendor() {  Name = "Vendor B" },
             };
         
         
             _dbContext.Vendors.AddRange(vendors);
 
             await _dbContext.SaveChangesAsync();
+
+            this.Vendors = vendors;
         }
 
         if (!_dbContext.UnitOfMeasurements.Any())
         {
-            var unitOfMeasurement = new UnitOfMeasurement { Id = 1, Name = "Pcs" };
+            var unitOfMeasurement = new UnitOfMeasurement {  Name = "Pcs" };
         
         
         
             _dbContext.UnitOfMeasurements.Add(unitOfMeasurement);
 
             await _dbContext.SaveChangesAsync();
+
+            this.Measure = unitOfMeasurement;
         }
 
 
@@ -50,12 +62,12 @@ public class ProductSeed
         {
             var category = new Category
             {
-                Id = this.CategoryId
-                , Name = "Chemicals"
+                 Name = "Chemicals"
                 ,CreatedById = AdminPK
             };
 
             _dbContext.Categories.Add(category);
+            this.Category = category;
         }
 
         if (!_dbContext.Products.Any())
@@ -64,25 +76,25 @@ public class ProductSeed
             {
                 new Product
                 {
-                    Id = 1, Name = "Chemical Product 1", CategoryId = CategoryId, Quantity = 100
+                     Name = "Chemical Product 1", Category = this.Category, Quantity = 100
                     ,CreatedById = AdminPK
                     ,Code = "001"
-                    ,UnitOfMeasurementId = 1
-                    ,VendorId = 1
+                    ,UnitOfMeasurement = Measure
+                    ,Vendor = Vendors[0]
                 },
                 new Product
                 {
-                    Id = 2, Name = "Chemical Product 2", CategoryId = CategoryId, Quantity = 100
+                     Name = "Chemical Product 2", Category = this.Category, Quantity = 100
                     ,CreatedById = AdminPK
                     ,Code = "002"
-                    ,UnitOfMeasurementId = 1
-                    ,VendorId = 1
+                    ,UnitOfMeasurement = Measure
+                    ,Vendor = Vendors[0]
                 },
-                new Product {Id = 3, Name = "Chemical Product 3", CategoryId = CategoryId, Quantity = 100
+                new Product { Name = "Chemical Product 3", Category = this.Category, Quantity = 100
                     ,CreatedById = AdminPK
                     ,Code = "003"
-                    ,UnitOfMeasurementId = 1
-                    ,VendorId = 1
+                    ,UnitOfMeasurement = Measure
+                    ,Vendor = Vendors[0]
                 }
             };
 
@@ -92,5 +104,19 @@ public class ProductSeed
        
 
         await _dbContext.SaveChangesAsync();
+
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        });
+
+      
     }
+
+    public List<Vendor> Vendors { get; set; }
+
+    public UnitOfMeasurement Measure { get; set; }
 }

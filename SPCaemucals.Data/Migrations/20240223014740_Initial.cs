@@ -81,7 +81,8 @@ namespace SPCaemucals.Data.Migrations
                 name: "UnitOfMeasurements",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -93,7 +94,8 @@ namespace SPCaemucals.Data.Migrations
                 name: "Vendors",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
@@ -237,7 +239,7 @@ namespace SPCaemucals.Data.Migrations
                     PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
                     TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
                     LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
@@ -264,16 +266,17 @@ namespace SPCaemucals.Data.Migrations
                 name: "Customers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerType = table.Column<int>(type: "int", nullable: false),
-                    TitleId = table.Column<int>(type: "int", nullable: false, comment: "คำนำหน้าชื่อ"),
+                    TitleId = table.Column<int>(type: "int", nullable: true, comment: "คำนำหน้าชื่อ"),
                     CreditDay = table.Column<int>(type: "int", nullable: false, comment: "เครดิต-วัน"),
                     Discount = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
                     CreditLimit = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    AccountNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AccountNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNo = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AddressId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -381,7 +384,8 @@ namespace SPCaemucals.Data.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreatedById = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -432,7 +436,8 @@ namespace SPCaemucals.Data.Migrations
                 name: "Parcels",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     CustomerId = table.Column<int>(type: "int", nullable: false),
                     SaleManId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DeliveryManId = table.Column<string>(type: "nvarchar(450)", nullable: true),
@@ -473,7 +478,8 @@ namespace SPCaemucals.Data.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Detail = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -532,7 +538,8 @@ namespace SPCaemucals.Data.Migrations
                 name: "ProductMoveHistories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     Change = table.Column<int>(type: "int", nullable: false),
@@ -576,7 +583,8 @@ namespace SPCaemucals.Data.Migrations
                 name: "ProductParcels",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     ParcelId = table.Column<int>(type: "int", nullable: false)
@@ -727,7 +735,7 @@ namespace SPCaemucals.Data.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "AddressId", "CompanyId", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", 0, null, 1, "90428129-b5d7-4645-9a19-18e7421b949d", "admin@sw.com", true, "John", "Doe", false, null, "ADMIN@SW.COM", "S&P_01", "AQAAAAIAAYagAAAAEHVm/1sSs2OjYRbeCx4vNLm13u2Ht8H1yFP83u9Y5L9NnN+3pS7SHMY/Tk9oWVM7QQ==", "0918131505", false, "", false, "S&P_01" });
+                values: new object[] { "1", 0, null, 1, "2b69efcf-abcc-4f30-b78f-f7890f416d1f", "admin@sw.com", true, "John", "Doe", false, null, "ADMIN@SW.COM", "S&P_01", "AQAAAAIAAYagAAAAEA5x2wwv9qMjXBjeBANyU6yDnMTHQnVMAeeYOm88RWjq6Dd+yfELIZpTlFhnqCg6dQ==", "0918131505", false, "", false, "S&P_01" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
@@ -799,6 +807,13 @@ namespace SPCaemucals.Data.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_PhoneNumber",
+                table: "AspNetUsers",
+                column: "PhoneNumber",
+                unique: true,
+                filter: "[PhoneNumber] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
@@ -819,6 +834,12 @@ namespace SPCaemucals.Data.Migrations
                 name: "IX_Customers_AddressId",
                 table: "Customers",
                 column: "AddressId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Customers_PhoneNo",
+                table: "Customers",
+                column: "PhoneNo",
                 unique: true);
 
             migrationBuilder.CreateIndex(

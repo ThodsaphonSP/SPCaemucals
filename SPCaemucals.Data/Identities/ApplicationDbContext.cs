@@ -95,7 +95,7 @@ namespace SPCaemucals.Data.Identities
             {
                 entity.HasKey(e => e.Id);
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                
                 
                 entity.HasOne<Product>(e => e.Product)
                     .WithMany(e => e.ProductParcels)
@@ -226,7 +226,7 @@ namespace SPCaemucals.Data.Identities
             modelBuilder.Entity<UnitOfMeasurement>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                
                 
                 entity.HasMany<Product>(e => e.Product)
                     .WithOne(e => e.UnitOfMeasurement)
@@ -241,7 +241,7 @@ namespace SPCaemucals.Data.Identities
             {
                 entity.HasKey(e => e.Id);
 
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                
 
                 entity.HasMany<Product>(e => e.Product)
                     .WithOne(e=>e.Vendor)
@@ -269,7 +269,11 @@ namespace SPCaemucals.Data.Identities
                     .WithOne(e => e.Employee)
                     .HasForeignKey<ApplicationUser>(e => e.AddressId)
                     .IsRequired(false);
+                
+                entity.HasIndex(e => e.PhoneNumber).IsUnique();
             });
+            
+            
         }
 
         private void ConfigureApplicationUserRoleEntity(ModelBuilder modelBuilder)
@@ -400,7 +404,7 @@ namespace SPCaemucals.Data.Identities
                 .HasForeignKey(p => p.CategoryId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<Product>().Property(e => e.Id).ValueGeneratedNever();
+            
 
             modelBuilder.Entity<Product>()
                 .HasOne<ApplicationUser>()
@@ -439,7 +443,7 @@ namespace SPCaemucals.Data.Identities
                 .HasForeignKey(e => e.ProductId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<ProductMoveHistory>().Property(e => e.Id).ValueGeneratedNever();
+            
             
             modelBuilder.Entity<ProductMoveHistory>()
                 .HasOne(pmh => pmh.Category)
@@ -478,7 +482,7 @@ namespace SPCaemucals.Data.Identities
                 .Property(e => e.MoveType)
                 .HasConversion<int>();
 
-            modelBuilder.Entity<Category>().Property(e => e.Id).ValueGeneratedNever();
+            
             
             modelBuilder.Entity<Category>()
                 .HasOne<ApplicationUser>()
@@ -535,7 +539,7 @@ namespace SPCaemucals.Data.Identities
             modelBuilder.Entity<Title>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).ValueGeneratedNever();
+              
                 entity.HasMany<Customer>(e=>e.Customers)
                     .WithOne(x => x.Title)
                     .HasForeignKey(x=>x.TitleId)
@@ -616,7 +620,7 @@ namespace SPCaemucals.Data.Identities
             modelBuilder.Entity<Customer>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                
                 
                 entity.HasOne<Address>(e => e.Addresses)
                 .WithOne(e => e.Customer)
@@ -633,6 +637,8 @@ namespace SPCaemucals.Data.Identities
                 modelBuilder.Entity<Customer>()
                     .Property(e => e.CustomerType)
                     .HasConversion<int>();
+                
+                entity.HasIndex(e => e.PhoneNo).IsUnique();
 
             });
         }
@@ -643,7 +649,7 @@ namespace SPCaemucals.Data.Identities
             modelBuilder.Entity<Parcel>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                
                 
                 
                 entity.HasOne<Customer>(e => e.Customer)
@@ -682,7 +688,7 @@ namespace SPCaemucals.Data.Identities
             modelBuilder.Entity<DeliveryVendor>(entity =>
             {
                 entity.HasKey(e => e.Id);
-                entity.Property(e => e.Id).ValueGeneratedNever();
+                
             });
         }
 

@@ -13,9 +13,9 @@ public class ReceiverDetails:BaseDetail
     {
         Customer customer = new Customer();
 
-        customer.PhoneNo = "0918131501";
-        customer.FirstName = "ทศพล";
-        customer.LastName = "sonthiphin";
+        customer.PhoneNo = PhoneNo;
+        customer.FirstName = Firstname;
+        customer.LastName = Lastname;
 
         return customer;
 

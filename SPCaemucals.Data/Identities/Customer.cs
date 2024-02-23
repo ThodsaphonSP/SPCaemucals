@@ -14,12 +14,16 @@ public class Customer:IEqualityComparer<Customer>
     [Comment("คำนำหน้าชื่อ")]
     public int? TitleId { get; set; }
     public virtual Title Title { get; set; }
+    
     [Comment("เครดิต-วัน")]
     public int CreditDay { get; set; }
+    
     [Column(TypeName = "decimal(18, 4)")]
     public decimal Discount { get; set; }
+    
     [Column(TypeName = "decimal(18, 4)")]
     public decimal CreditLimit { get; set; }
+    
     public string? AccountNo { get; set; }
     
     public string FirstName { get; set; }

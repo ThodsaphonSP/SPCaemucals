@@ -116,7 +116,10 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Identities.Customer", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AccountNo")
                         .HasColumnType("nvarchar(max)");
@@ -147,7 +150,7 @@ namespace SPCaemucals.Data.Migrations
 
                     b.Property<string>("PhoneNo")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int?>("TitleId")
                         .HasColumnType("int")
@@ -156,6 +159,9 @@ namespace SPCaemucals.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AddressId")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNo")
                         .IsUnique();
 
                     b.HasIndex("TitleId");
@@ -200,7 +206,10 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Identities.Parcel", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<bool>("CashOnDelivery")
                         .HasColumnType("bit")
@@ -414,7 +423,7 @@ namespace SPCaemucals.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
@@ -445,6 +454,10 @@ namespace SPCaemucals.Data.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique()
+                        .HasFilter("[PhoneNumber] IS NOT NULL");
+
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.HasData(
@@ -453,7 +466,7 @@ namespace SPCaemucals.Data.Migrations
                             Id = "1",
                             AccessFailedCount = 0,
                             CompanyId = 1,
-                            ConcurrencyStamp = "f47ab5ab-2f6c-42f4-9319-101d90675f1f",
+                            ConcurrencyStamp = "2b69efcf-abcc-4f30-b78f-f7890f416d1f",
                             Email = "admin@sw.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -461,7 +474,7 @@ namespace SPCaemucals.Data.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@SW.COM",
                             NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEB7NNBbyLsnFLLohqbrLzFytgr9Lj8BghYkwHYsKOFUoIZvd7LeDC5ajNBc6knOs1A==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEA5x2wwv9qMjXBjeBANyU6yDnMTHQnVMAeeYOm88RWjq6Dd+yfELIZpTlFhnqCg6dQ==",
                             PhoneNumber = "0918131505",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "",
@@ -495,7 +508,10 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Models.Category", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("CreatedById")
                         .IsRequired()
@@ -601,7 +617,10 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Models.Product", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -678,7 +697,10 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Models.ProductMoveHistory", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
@@ -730,7 +752,10 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Models.ProductParcel", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("ParcelId")
                         .HasColumnType("int");
@@ -1209,7 +1234,10 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Models.UnitOfMeasurement", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -1223,7 +1251,10 @@ namespace SPCaemucals.Data.Migrations
             modelBuilder.Entity("SPCaemucals.Data.Models.Vendor", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
                         .IsRequired()
