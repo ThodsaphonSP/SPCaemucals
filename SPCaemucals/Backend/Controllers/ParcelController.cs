@@ -150,16 +150,16 @@ namespace SPCaemucals.Backend.Controllers
                                 {
                                     ProductId = product.Id,
                                     CategoryId = product.CategoryId,
-                                    Change = selectProduct.IndexNumber.product.Quantity,
+                                    Change = selectProduct.IndexNumber.quantity,
                                     QuantityBeforeChange = product.Quantity,
-                                    QuantityAfterChange = product.Quantity - selectProduct.IndexNumber.product.Quantity,
+                                    QuantityAfterChange = product.Quantity - selectProduct.IndexNumber.quantity,
                                     MoveType = MoveType.Subtract,
                                     CreatedById = saleman.Id,
                                     UpdatedDate = DateTime.Now
                                 };
 
                                 histList.Add(history);
-                                product.Quantity -= selectProduct.IndexNumber.product.Quantity;
+                                product.Quantity -= selectProduct.IndexNumber.quantity;
 
                                 ProductParcel productParcel = new ProductParcel()
                                 {
