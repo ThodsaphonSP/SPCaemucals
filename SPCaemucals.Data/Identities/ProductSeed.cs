@@ -100,6 +100,8 @@ public class ProductSeed
 
             _dbContext.Products.AddRange(products);
         }
+        
+        transaction.Commit();
 
        
 
