@@ -49,7 +49,9 @@ namespace SPCaemucals.Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ParcelForm model)
         {
-            return await _dbContext.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
+            
+            string errorMessage = string.Empty;
+            await _dbContext.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
             {
                 using (var transaction = _dbContext.Database.BeginTransaction())
                 {
@@ -69,7 +71,7 @@ namespace SPCaemucals.Backend.Controllers
                             newCustomerAddress = receiver.GetAddress();
 
                             newCustomer = receiver.GetCustomer();
-                            _dbContext.Customers.AssignNextId(newCustomer, nameof(newCustomer.Id));
+
 
                             newCustomer.Addresses = newCustomerAddress;
 
@@ -93,18 +95,16 @@ namespace SPCaemucals.Backend.Controllers
                         {
                             saleman.Address = sender.GetAddress();
                             _dbContext.Entry(saleman).State = EntityState.Modified;
-                            
                         }
                         else
                         {
                             var address = saleman.Address;
                             _dbContext.Addresses.Remove(address);
-                            
+
                             saleman.Address = sender.GetAddress();
                             _dbContext.Entry(saleman).State = EntityState.Modified;
-                            
                         }
-                        
+
                         await _dbContext.SaveChangesAsync();
 
 
@@ -118,7 +118,6 @@ namespace SPCaemucals.Backend.Controllers
                             DeliveryVendorId = sender.VendorDelivery.Id
                         };
 
-                        _dbContext.Parcels.AssignNextId(parcel, nameof(parcel.Id));
 
                         _dbContext.Parcels.Add(parcel);
                         await _dbContext.SaveChangesAsync();
@@ -130,9 +129,6 @@ namespace SPCaemucals.Backend.Controllers
                         List<ProductMoveHistory> histList = new List<ProductMoveHistory>();
                         List<ProductParcel> productParcels = new List<ProductParcel>();
 
-                        var lastHistoryId = _dbContext.ProductMoveHistories.Max(x => x.Id);
-
-                   
 
                         foreach (SelectProduct selectProduct in senderProductList)
                         {
@@ -140,32 +136,28 @@ namespace SPCaemucals.Backend.Controllers
                                 _dbContext.Products.FirstOrDefault(x => x.Id == selectProduct.IndexNumber.product.Id);
                             if (product != null)
                             {
-                                
                                 productList.Add(product);
                                 // save phoduct his
-                                
+
 
                                 var history = new ProductMoveHistory()
                                 {
-                                    Id = lastHistoryId,
                                     ProductId = product.Id,
                                     CategoryId = product.CategoryId,
                                     Change = selectProduct.IndexNumber.product.Quantity,
                                     QuantityBeforeChange = product.Quantity,
                                     QuantityAfterChange = product.Quantity - selectProduct.IndexNumber.product.Quantity,
                                     MoveType = MoveType.Subtract,
-                                    CreatedById = userId,
-                                    UpdatedBy = userId,
+                                    CreatedById = saleman.Id,
                                     UpdatedDate = DateTime.Now
                                 };
-                                
-                             
-                                
+
+
                                 //store stock history
                                 histList.Add(history);
 
                                 product.Quantity -= selectProduct.IndexNumber.product.Quantity;
-                                
+
                                 ProductParcel productParcel = new ProductParcel()
                                 {
                                     Product = product,
@@ -173,33 +165,49 @@ namespace SPCaemucals.Backend.Controllers
                                     Parcel = parcel
                                 };
                                 productParcels.Add(productParcel);
-                                
+                            }
+                            else
+                            {
+                                throw new Exception($"product id:{selectProduct.IndexNumber.product.Id}  is not exist");
                             }
                         }
 
 
-                        
-
-
                         //create product in parcel
-                        
+
                         //commit transaction
                         _dbContext.ProductMoveHistories.AddRange(histList);
                         _dbContext.Products.UpdateRange(productList);
                         _dbContext.ProductParcels.AddRange(productParcels);
                         await _dbContext.SaveChangesAsync();
                         transaction.Commit();
-                        return Ok();
+                        
                     }
-                    catch (Exception)
+                    catch (Exception exception)
                     {
                         //rollback transaction
                         transaction.Rollback();
-                        //return error response
-                        return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+
+                        string message = exception.Message;
+                        if (exception.InnerException != null)
+                        {
+                            message += "\n" + exception.InnerException.Message;
+                        }
+
+                        errorMessage = message;
                     }
                 }
             });
+
+            if (string.IsNullOrEmpty(errorMessage))
+            {
+                return Ok();
+                
+            }
+            else
+            {
+                return BadRequest(errorMessage);
+            }
         }
 
         // PUT api/<ParcelController>/5
