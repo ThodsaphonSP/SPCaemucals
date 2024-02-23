@@ -84,8 +84,7 @@ public class ProductController : ControllerBase
         var product = _mapper.Map<Product>(body);
         if (IsProductNotExist(product))
         {
-
-            _dbContext.Products.AssignNextId(product, nameof(product.Id));
+            
             
             _dbContext.Products.Add(product);
             await _dbContext.SaveChangesAsync();
