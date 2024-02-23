@@ -130,15 +130,21 @@ namespace SPCaemucals.Backend.Controllers
                         List<ProductParcel> productParcels = new List<ProductParcel>();
 
 
+                        // Instead of looking up one product at a time in the database, 
+// we create a lookup map of products ahead of time.
+                        List<int> productIds = senderProductList
+                            .Select(selectProduct => selectProduct.IndexNumber.product.Id)
+                            .ToList();
+
+                        Dictionary<int, Product> productLookup = _dbContext.Products
+                            .Where(p => productIds.Contains(p.Id))
+                            .ToDictionary(p => p.Id, p => p);
+
                         foreach (SelectProduct selectProduct in senderProductList)
                         {
-                            var product =
-                                _dbContext.Products.FirstOrDefault(x => x.Id == selectProduct.IndexNumber.product.Id);
-                            if (product != null)
+                            if (productLookup.TryGetValue(selectProduct.IndexNumber.product.Id, out var product))
                             {
                                 productList.Add(product);
-                                // save phoduct his
-
 
                                 var history = new ProductMoveHistory()
                                 {
@@ -152,10 +158,7 @@ namespace SPCaemucals.Backend.Controllers
                                     UpdatedDate = DateTime.Now
                                 };
 
-
-                                //store stock history
                                 histList.Add(history);
-
                                 product.Quantity -= selectProduct.IndexNumber.product.Quantity;
 
                                 ProductParcel productParcel = new ProductParcel()
@@ -164,6 +167,7 @@ namespace SPCaemucals.Backend.Controllers
                                     Quantity = selectProduct.IndexNumber.product.Quantity,
                                     Parcel = parcel
                                 };
+
                                 productParcels.Add(productParcel);
                             }
                             else
