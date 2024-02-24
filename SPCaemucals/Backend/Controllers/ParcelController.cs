@@ -1,9 +1,12 @@
 using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SPCaemucals.Backend.Dto;
 using SPCaemucals.Backend.Dto.Model;
+using SPCaemucals.Backend.Filters;
 using SPCaemucals.Data.Enum;
 using SPCaemucals.Data.Identities;
 using SPCaemucals.Data.Models;
@@ -19,13 +22,15 @@ namespace SPCaemucals.Backend.Controllers
         private readonly ILogger<ParcelController> _logger;
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IMapper _mapper;
 
         public ParcelController(ILogger<ParcelController> logger, ApplicationDbContext dbContext,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,IMapper mapper)
         {
             _logger = logger;
             _dbContext = dbContext;
             _userManager = userManager;
+            _mapper = mapper;
         }
 
         // GET: api/<ParcelController>
@@ -212,6 +217,54 @@ namespace SPCaemucals.Backend.Controllers
             {
                 return BadRequest(errorMessage);
             }
+        }
+
+        [HttpGet("getPage")]
+       
+        public async Task<IActionResult> GetParcelPageLIst(int pageNumber = 1, int pageSize = 10,string receiveName ="")
+        {
+            var query = _dbContext.Parcels.AsQueryable();
+            if (!string.IsNullOrEmpty(receiveName))
+            {
+                query = query.Where(
+                    p => p.Customer.FirstName.Contains(receiveName) || p.Customer.LastName.Contains(receiveName));
+            }
+            var userId = HttpContext.User.FindFirstValue("UserId");
+            query = query.Where(x => x.SaleManId == userId);
+
+            query = query
+                .Include(x => x.Customer).ThenInclude(x => x.Addresses)
+                .Include(x => x.Customer).ThenInclude(x => x.Addresses).ThenInclude(x => x.Province)
+                .Include(x => x.Customer).ThenInclude(x => x.Addresses).ThenInclude(x => x.District)
+                .Include(x => x.Customer).ThenInclude(x => x.Addresses).ThenInclude(x => x.SubDistrict)
+                .Include(x => x.Customer).ThenInclude(x => x.Addresses).ThenInclude(x => x.PostalCode)
+                .Include(x => x.DeliveryVendor)
+                .Include(x => x.SaleMan)
+                .Include(x => x.SaleMan).ThenInclude(x => x.Address)
+                .Include(x => x.SaleMan).ThenInclude(x => x.Address).ThenInclude(x => x.Province)
+                .Include(x => x.SaleMan).ThenInclude(x => x.Address).ThenInclude(x => x.District)
+                .Include(x => x.SaleMan).ThenInclude(x => x.Address).ThenInclude(x => x.SubDistrict)
+                .Include(x => x.SaleMan).ThenInclude(x => x.Address).ThenInclude(x => x.PostalCode);
+                
+                
+            
+            var parcels = await PagedList<Parcel>.CreateAsync(query, pageNumber, pageSize);
+
+            var parcelList = parcels.ToList();
+
+            var parcelDto = _mapper.Map<List<ParcelDTO>>(parcelList);
+      
+            
+           
+
+            var newOp = new
+            {
+                parcels.TotalCount, parcels.CurrentPage, parcels.PageSize, parcels.TotalPages,
+                Parcels = parcelDto
+            };
+
+            return Ok(newOp);
+            
         }
 
         // PUT api/<ParcelController>/5

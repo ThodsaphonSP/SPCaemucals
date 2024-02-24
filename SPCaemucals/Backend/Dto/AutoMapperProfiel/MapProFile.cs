@@ -42,5 +42,15 @@ public class MapProFile:Profile
 
         CreateMap<DeliveryVendor, DeliveryVendorDTO>().ReverseMap();
 
+        CreateMap<Customer, CustmerDTO>().ReverseMap();
+
+        CreateMap<DeliveryVendor, DeliveryVendorDTO>().ReverseMap();
+        
+        CreateMap<ProductParcel, ProductParcelDTO>().ReverseMap();
+        
+        CreateMap<Parcel, ParcelDTO>().ReverseMap();
+        CreateMap<Address, AddressDTO>().ReverseMap();
+        CreateMap<Title, TitleDTO>().ReverseMap();
+
     }
 }

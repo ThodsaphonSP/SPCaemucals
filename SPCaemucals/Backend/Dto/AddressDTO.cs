@@ -1,4 +1,5 @@
 
+using SPCaemucals.Backend.Controllers;
 using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Dto;
@@ -13,6 +14,12 @@ public class AddressDTO
     public int DistrictId { get; set; }
     public int SubDistrictId { get; set; }
     public int PostalCodeCodeId { get; set; }
+    
+    
+    public virtual ProvinceDTO Province { get; set; }
+    public virtual DistrictDTO District { get; set; }
+    public virtual SubDistrictDTO SubDistrict { get; set; }
+    public virtual PostalDTO PostalCode { get; set; }
     
     
     
