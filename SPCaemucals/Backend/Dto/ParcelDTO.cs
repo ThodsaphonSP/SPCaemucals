@@ -12,6 +12,8 @@ public class ParcelDTO
     public string SaleManId { get; set; }
     public string DeliveryManId { get; set; }
     public  ParcelStatus ParcelStatus { get; set; }
+    
+    public string VendorTrackingNo { get; set; }
         
  
     public virtual UserDto ShippingCoordinator { get; set; }
