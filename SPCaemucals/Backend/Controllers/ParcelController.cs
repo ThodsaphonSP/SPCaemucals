@@ -252,7 +252,7 @@ namespace SPCaemucals.Backend.Controllers
 
             var parcelList = parcels.ToList();
 
-            var parcelDto = _mapper.Map<List<ParcelDTO>>(parcelList);
+            List<ParcelDTO>? parcelDto = _mapper.Map<List<ParcelDTO>>(parcelList);
       
             
            
