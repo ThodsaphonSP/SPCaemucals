@@ -16,12 +16,12 @@ public class ApplicationUser:IdentityUser
     [Required]
     [ForeignKey("Company")]
 
-    public int CompanyId { get; set; }
+    public int? CompanyId { get; set; }
 
     public int? AddressId { get; set; }
 
     // Navigation property
-    public Company Company { get; set; }
+    public virtual Company Company { get; set; }
     
     //Navigation propery
 

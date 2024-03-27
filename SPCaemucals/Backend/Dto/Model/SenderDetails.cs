@@ -2,8 +2,12 @@ using SPCaemucals.Backend.Controllers;
 
 namespace SPCaemucals.Backend.Dto.Model;
 
-public class SenderDetails:BaseDetail
+public class SenderDetails
 {
+    
+    public string? Firstname { get; set; }
+    public string? Lastname { get; set; }
+    public string? PhoneNo { get; set; }
     public DeliveryVendorDTO VendorDelivery { get; set; }
     public List<SelectProduct> SelectProduct { get; set; }
     

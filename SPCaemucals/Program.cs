@@ -287,32 +287,36 @@ Log.Information("Application Shutting Down");
 
 
         var seedObject = scope.ServiceProvider.GetRequiredService<ProductSeed>();
+        
+        await seedObject.MainSeed();
 
-        // Check if any categories exist
-        if (!context.Categories.Any() && !context.Products.Any())
-        {
-            await seedObject.SeedCategoryAndProductAsync();
-        }
+        // // Check if any categories exist
+        // if (!context.Categories.Any() && !context.Products.Any())
+        // {
+        //     await seedObject.SeedCategoryAndProductAsync();
+        // }
+        //
+        //
+        // await context.SaveChangesAsync();
+        //
+        // string filePath = Path.Combine(Directory.GetCurrentDirectory(),"Script", "district.sql");
+        //
+         
+        //
+        // string subDistrictPath = Path.Combine(Directory.GetCurrentDirectory(),"Script", "SubDistricts.sql");
+        // 
+        //
+        // var seedData = new Seed(context);
+        //
+        // await seedData.InsertProvinceAsync(filePath);
 
+        //
+        // await seedData.InsertPostalAsync(pstPath);
+        //
+        // await seedData.SeedAddressCompany();
+        // await seedData.SeedCompany();
+        // await seedData.SeedApplicationUsers();
 
-        await context.SaveChangesAsync();
-        
-        string filePath = Path.Combine(Directory.GetCurrentDirectory(),"Script", "district.sql");
-        
-        string districtPath = Path.Combine(Directory.GetCurrentDirectory(),"Script", "district.sql");
-        
-        string subDistrictPath = Path.Combine(Directory.GetCurrentDirectory(),"Script", "SubDistricts.sql");
-        string pstPath = Path.Combine(Directory.GetCurrentDirectory(),"Script", "PostalCodes.sql");
-
-        var seedData = new Seed(context);
-    
-        await seedData.InsertProvinceAsync(filePath);
-        await seedData.InsertDistrictAsync(districtPath);
-        
-        await seedData.InsertSubDistrictAsync(subDistrictPath);
-        
-        await seedData.InsertPostalAsync(pstPath);
-        
     }
 
     

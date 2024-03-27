@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using AutoMapper;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -7,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using SPCaemucals.Backend.Dto;
 using SPCaemucals.Backend.Dto.Model;
 using SPCaemucals.Backend.Filters;
+using SPCaemucals.Backend.Validator.Parcel;
 using SPCaemucals.Data.Enum;
 using SPCaemucals.Data.Identities;
 using SPCaemucals.Data.Models;
@@ -54,6 +56,14 @@ namespace SPCaemucals.Backend.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] ParcelForm model)
         {
+            ParcelFormValidator validator = new ParcelFormValidator();
+            
+            ValidationResult? result = validator.Validate(model);
+
+            if (!result.IsValid)
+            {
+                return BadRequest(result);
+            }
             
             string errorMessage = string.Empty;
             await _dbContext.Database.CreateExecutionStrategy().ExecuteAsync(async () =>
@@ -95,20 +105,8 @@ namespace SPCaemucals.Backend.Controllers
                         {
                             throw new Exception("User is not logged in or does not exist");
                         }
-
-                        if (saleman.Address == null)
-                        {
-                            saleman.Address = sender.GetAddress();
-                            _dbContext.Entry(saleman).State = EntityState.Modified;
-                        }
-                        else
-                        {
-                            var address = saleman.Address;
-                            _dbContext.Addresses.Remove(address);
-
-                            saleman.Address = sender.GetAddress();
-                            _dbContext.Entry(saleman).State = EntityState.Modified;
-                        }
+                        
+                        
 
                         await _dbContext.SaveChangesAsync();
 

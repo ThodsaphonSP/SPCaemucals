@@ -28,19 +28,6 @@ namespace SPCaemucals.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Company",
-                columns: table => new
-                {
-                    CompanyId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Company", x => x.CompanyId);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DeliveryVendors",
                 columns: table => new
                 {
@@ -223,6 +210,59 @@ namespace SPCaemucals.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Company",
+                columns: table => new
+                {
+                    CompanyId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CompanyName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Company", x => x.CompanyId);
+                    table.ForeignKey(
+                        name: "FK_Company_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Customers",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CustomerType = table.Column<int>(type: "int", nullable: false),
+                    TitleId = table.Column<int>(type: "int", nullable: true, comment: "คำนำหน้าชื่อ"),
+                    CreditDay = table.Column<int>(type: "int", nullable: false, comment: "เครดิต-วัน"),
+                    Discount = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    CreditLimit = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    AccountNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNo = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Customers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Customers_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Customers_Titles_TitleId",
+                        column: x => x.TitleId,
+                        principalTable: "Titles",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetUsers",
                 columns: table => new
                 {
@@ -260,39 +300,6 @@ namespace SPCaemucals.Data.Migrations
                         principalTable: "Company",
                         principalColumn: "CompanyId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Customers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    CustomerType = table.Column<int>(type: "int", nullable: false),
-                    TitleId = table.Column<int>(type: "int", nullable: true, comment: "คำนำหน้าชื่อ"),
-                    CreditDay = table.Column<int>(type: "int", nullable: false, comment: "เครดิต-วัน"),
-                    Discount = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    CreditLimit = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
-                    AccountNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNo = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    AddressId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Customers_Addresses_AddressId",
-                        column: x => x.AddressId,
-                        principalTable: "Addresses",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Customers_Titles_TitleId",
-                        column: x => x.TitleId,
-                        principalTable: "Titles",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -409,30 +416,6 @@ namespace SPCaemucals.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "RefreshToken",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreatedByIp = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Revoked = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    RevokedByIp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RefreshToken", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RefreshToken_AspNetUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Parcels",
                 columns: table => new
                 {
@@ -442,6 +425,7 @@ namespace SPCaemucals.Data.Migrations
                     SaleManId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     DeliveryManId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ParcelStatus = table.Column<int>(type: "int", nullable: false),
+                    VendorTrackingNo = table.Column<string>(type: "nvarchar(max)", nullable: false, comment: "หมายเลข tracking จากขนส่ง"),
                     CashOnDelivery = table.Column<bool>(type: "bit", nullable: false, comment: "เก็บเงินปลายทาง Cash on delivery"),
                     DeliveryVendorId = table.Column<int>(type: "int", nullable: false)
                 },
@@ -472,6 +456,30 @@ namespace SPCaemucals.Data.Migrations
                         principalTable: "DeliveryVendors",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RefreshToken",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Expires = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Created = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedByIp = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Revoked = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    RevokedByIp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshToken", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshToken_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -607,29 +615,6 @@ namespace SPCaemucals.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { "1", null, "Admin", "ADMIN" },
-                    { "2", null, "SSaleRole", "SSALEROLE" },
-                    { "3", null, "JSaleRole", "JSALEROLE" },
-                    { "4", null, "RSaleRole", "RSALEROLE" },
-                    { "5", null, "AccountRole", "ACCOUNTROLE" },
-                    { "6", null, "ShippingCoordinatorRole", "SHIPPINGCOORDINATORROLE" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Company",
-                columns: new[] { "CompanyId", "CompanyName" },
-                values: new object[,]
-                {
-                    { 1, "S&P" },
-                    { 2, "S2P" },
-                    { 3, "Aceepta" }
-                });
-
-            migrationBuilder.InsertData(
                 table: "DeliveryVendors",
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
@@ -640,90 +625,6 @@ namespace SPCaemucals.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Provinces",
-                columns: new[] { "Id", "ThaiName" },
-                values: new object[,]
-                {
-                    { 10, "กรุงเทพมหานคร" },
-                    { 11, "สมุทรปราการ" },
-                    { 12, "นนทบุรี" },
-                    { 13, "ปทุมธานี" },
-                    { 14, "พระนครศรีอยุธยา" },
-                    { 15, "อ่างทอง" },
-                    { 16, "ลพบุรี" },
-                    { 17, "สิงห์บุรี" },
-                    { 18, "ชัยนาท" },
-                    { 19, "สระบุรี" },
-                    { 20, "ชลบุรี" },
-                    { 21, "ระยอง" },
-                    { 22, "จันทบุรี" },
-                    { 23, "ตราด" },
-                    { 24, "ฉะเชิงเทรา" },
-                    { 25, "ปราจีนบุรี" },
-                    { 26, "นครนายก" },
-                    { 27, "สระแก้ว" },
-                    { 30, "นครราชสีมา" },
-                    { 31, "บุรีรัมย์" },
-                    { 32, "สุรินทร์" },
-                    { 33, "ศรีสะเกษ" },
-                    { 34, "อุบลราชธานี" },
-                    { 35, "ยโสธร" },
-                    { 36, "ชัยภูมิ" },
-                    { 37, "อำนาจเจริญ" },
-                    { 38, "บึงกาฬ" },
-                    { 39, "หนองบัวลำภู" },
-                    { 40, "ขอนแก่น" },
-                    { 41, "อุดรธานี" },
-                    { 42, "เลย" },
-                    { 43, "หนองคาย" },
-                    { 44, "มหาสารคาม" },
-                    { 45, "ร้อยเอ็ด" },
-                    { 46, "กาฬสินธุ์" },
-                    { 47, "สกลนคร" },
-                    { 48, "นครพนม" },
-                    { 49, "มุกดาหาร" },
-                    { 50, "เชียงใหม่" },
-                    { 51, "ลำพูน" },
-                    { 52, "ลำปาง" },
-                    { 53, "อุตรดิตถ์" },
-                    { 54, "แพร่" },
-                    { 55, "น่าน" },
-                    { 56, "พะเยา" },
-                    { 57, "เชียงราย" },
-                    { 58, "แม่ฮ่องสอน" },
-                    { 60, "นครสวรรค์" },
-                    { 61, "อุทัยธานี" },
-                    { 62, "กำแพงเพชร" },
-                    { 63, "ตาก" },
-                    { 64, "สุโขทัย" },
-                    { 65, "พิษณุโลก" },
-                    { 66, "พิจิตร" },
-                    { 67, "เพชรบูรณ์" },
-                    { 70, "ราชบุรี" },
-                    { 71, "กาญจนบุรี" },
-                    { 72, "สุพรรณบุรี" },
-                    { 73, "นครปฐม" },
-                    { 74, "สมุทรสาคร" },
-                    { 75, "สมุทรสงคราม" },
-                    { 76, "เพชรบุรี" },
-                    { 77, "ประจวบคีรีขันธ์" },
-                    { 80, "นครศรีธรรมราช" },
-                    { 81, "กระบี่" },
-                    { 82, "พังงา" },
-                    { 83, "ภูเก็ต" },
-                    { 84, "สุราษฎร์ธานี" },
-                    { 85, "ระนอง" },
-                    { 86, "ชุมพร" },
-                    { 90, "สงขลา" },
-                    { 91, "สตูล" },
-                    { 92, "ตรัง" },
-                    { 93, "พัทลุง" },
-                    { 94, "ปัตตานี" },
-                    { 95, "ยะลา" },
-                    { 96, "นราธิวาส" }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Titles",
                 columns: new[] { "Id", "Name" },
                 values: new object[,]
@@ -731,16 +632,6 @@ namespace SPCaemucals.Data.Migrations
                     { 1, "นาย" },
                     { 2, "นางสาว" }
                 });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "AddressId", "CompanyId", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1", 0, null, 1, "2b69efcf-abcc-4f30-b78f-f7890f416d1f", "admin@sw.com", true, "John", "Doe", false, null, "ADMIN@SW.COM", "S&P_01", "AQAAAAIAAYagAAAAEA5x2wwv9qMjXBjeBANyU6yDnMTHQnVMAeeYOm88RWjq6Dd+yfELIZpTlFhnqCg6dQ==", "0918131505", false, "", false, "S&P_01" });
-
-            migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "1", "1" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_DistrictId",
@@ -829,6 +720,12 @@ namespace SPCaemucals.Data.Migrations
                 name: "IX_Categories_UpdatedBy",
                 table: "Categories",
                 column: "UpdatedBy");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Company_AddressId",
+                table: "Company",
+                column: "AddressId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Customers_AddressId",
@@ -1008,10 +905,10 @@ namespace SPCaemucals.Data.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Addresses");
+                name: "Company");
 
             migrationBuilder.DropTable(
-                name: "Company");
+                name: "Addresses");
 
             migrationBuilder.DropTable(
                 name: "PostalCodes");

@@ -35,7 +35,9 @@ public class MapProFile:Profile
 
         CreateMap<UnitOfMeasurement, UnitOfMeasurementDTO>().ReverseMap();
 
-        CreateMap<Data.Models.Product, SPCaemucals.Backend.Dto.ProductDTO>().ReverseMap();
+        CreateMap<Data.Models.Product, SPCaemucals.Backend.Dto.ProductDTO>()
+            .ReverseMap()
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
         
         
         CreateMap<SPCaemucals.Data.Models.Company, SPCaemucals.Backend.Dto.CompanyDTO.Company>().ReverseMap();

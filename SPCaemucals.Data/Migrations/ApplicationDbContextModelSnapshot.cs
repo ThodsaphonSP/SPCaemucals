@@ -232,7 +232,6 @@ namespace SPCaemucals.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("VendorTrackingNo")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)")
                         .HasComment("หมายเลข tracking จากขนส่ง");
 
@@ -337,44 +336,6 @@ namespace SPCaemucals.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "1",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "2",
-                            Name = "SSaleRole",
-                            NormalizedName = "SSALEROLE"
-                        },
-                        new
-                        {
-                            Id = "3",
-                            Name = "JSaleRole",
-                            NormalizedName = "JSALEROLE"
-                        },
-                        new
-                        {
-                            Id = "4",
-                            Name = "RSaleRole",
-                            NormalizedName = "RSALEROLE"
-                        },
-                        new
-                        {
-                            Id = "5",
-                            Name = "AccountRole",
-                            NormalizedName = "ACCOUNTROLE"
-                        },
-                        new
-                        {
-                            Id = "6",
-                            Name = "ShippingCoordinatorRole",
-                            NormalizedName = "SHIPPINGCOORDINATORROLE"
-                        });
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationUser", b =>
@@ -388,7 +349,8 @@ namespace SPCaemucals.Data.Migrations
                     b.Property<int?>("AddressId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CompanyId")
+                    b.Property<int?>("CompanyId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -464,28 +426,6 @@ namespace SPCaemucals.Data.Migrations
                         .HasFilter("[PhoneNumber] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "1",
-                            AccessFailedCount = 0,
-                            CompanyId = 1,
-                            ConcurrencyStamp = "b16c7c34-f6ad-4680-8b72-f6aa0667a28b",
-                            Email = "admin@sw.com",
-                            EmailConfirmed = true,
-                            FirstName = "John",
-                            LastName = "Doe",
-                            LockoutEnabled = false,
-                            NormalizedEmail = "ADMIN@SW.COM",
-                            NormalizedUserName = "S&P_01",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDMDcIg5uX3PSO2BDE/9BoSE6IIA2I7w3888IpuvNIPNvhecOEj769TITTXdYTYimA==",
-                            PhoneNumber = "0918131505",
-                            PhoneNumberConfirmed = false,
-                            SecurityStamp = "",
-                            TwoFactorEnabled = false,
-                            UserName = "S&P_01"
-                        });
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationUserRole", b =>
@@ -501,13 +441,6 @@ namespace SPCaemucals.Data.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "1",
-                            RoleId = "1"
-                        });
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.Category", b =>
@@ -555,30 +488,19 @@ namespace SPCaemucals.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyId"));
 
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
                     b.Property<string>("CompanyName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("CompanyId");
 
-                    b.ToTable("Company");
+                    b.HasIndex("AddressId")
+                        .IsUnique();
 
-                    b.HasData(
-                        new
-                        {
-                            CompanyId = 1,
-                            CompanyName = "S&P"
-                        },
-                        new
-                        {
-                            CompanyId = 2,
-                            CompanyName = "S2P"
-                        },
-                        new
-                        {
-                            CompanyId = 3,
-                            CompanyName = "Aceepta"
-                        });
+                    b.ToTable("Company");
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.District", b =>
@@ -792,393 +714,6 @@ namespace SPCaemucals.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Provinces");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 10,
-                            ThaiName = "กรุงเทพมหานคร"
-                        },
-                        new
-                        {
-                            Id = 11,
-                            ThaiName = "สมุทรปราการ"
-                        },
-                        new
-                        {
-                            Id = 12,
-                            ThaiName = "นนทบุรี"
-                        },
-                        new
-                        {
-                            Id = 13,
-                            ThaiName = "ปทุมธานี"
-                        },
-                        new
-                        {
-                            Id = 14,
-                            ThaiName = "พระนครศรีอยุธยา"
-                        },
-                        new
-                        {
-                            Id = 15,
-                            ThaiName = "อ่างทอง"
-                        },
-                        new
-                        {
-                            Id = 16,
-                            ThaiName = "ลพบุรี"
-                        },
-                        new
-                        {
-                            Id = 17,
-                            ThaiName = "สิงห์บุรี"
-                        },
-                        new
-                        {
-                            Id = 18,
-                            ThaiName = "ชัยนาท"
-                        },
-                        new
-                        {
-                            Id = 19,
-                            ThaiName = "สระบุรี"
-                        },
-                        new
-                        {
-                            Id = 20,
-                            ThaiName = "ชลบุรี"
-                        },
-                        new
-                        {
-                            Id = 21,
-                            ThaiName = "ระยอง"
-                        },
-                        new
-                        {
-                            Id = 22,
-                            ThaiName = "จันทบุรี"
-                        },
-                        new
-                        {
-                            Id = 23,
-                            ThaiName = "ตราด"
-                        },
-                        new
-                        {
-                            Id = 24,
-                            ThaiName = "ฉะเชิงเทรา"
-                        },
-                        new
-                        {
-                            Id = 25,
-                            ThaiName = "ปราจีนบุรี"
-                        },
-                        new
-                        {
-                            Id = 26,
-                            ThaiName = "นครนายก"
-                        },
-                        new
-                        {
-                            Id = 27,
-                            ThaiName = "สระแก้ว"
-                        },
-                        new
-                        {
-                            Id = 30,
-                            ThaiName = "นครราชสีมา"
-                        },
-                        new
-                        {
-                            Id = 31,
-                            ThaiName = "บุรีรัมย์"
-                        },
-                        new
-                        {
-                            Id = 32,
-                            ThaiName = "สุรินทร์"
-                        },
-                        new
-                        {
-                            Id = 33,
-                            ThaiName = "ศรีสะเกษ"
-                        },
-                        new
-                        {
-                            Id = 34,
-                            ThaiName = "อุบลราชธานี"
-                        },
-                        new
-                        {
-                            Id = 35,
-                            ThaiName = "ยโสธร"
-                        },
-                        new
-                        {
-                            Id = 36,
-                            ThaiName = "ชัยภูมิ"
-                        },
-                        new
-                        {
-                            Id = 37,
-                            ThaiName = "อำนาจเจริญ"
-                        },
-                        new
-                        {
-                            Id = 38,
-                            ThaiName = "บึงกาฬ"
-                        },
-                        new
-                        {
-                            Id = 39,
-                            ThaiName = "หนองบัวลำภู"
-                        },
-                        new
-                        {
-                            Id = 40,
-                            ThaiName = "ขอนแก่น"
-                        },
-                        new
-                        {
-                            Id = 41,
-                            ThaiName = "อุดรธานี"
-                        },
-                        new
-                        {
-                            Id = 42,
-                            ThaiName = "เลย"
-                        },
-                        new
-                        {
-                            Id = 43,
-                            ThaiName = "หนองคาย"
-                        },
-                        new
-                        {
-                            Id = 44,
-                            ThaiName = "มหาสารคาม"
-                        },
-                        new
-                        {
-                            Id = 45,
-                            ThaiName = "ร้อยเอ็ด"
-                        },
-                        new
-                        {
-                            Id = 46,
-                            ThaiName = "กาฬสินธุ์"
-                        },
-                        new
-                        {
-                            Id = 47,
-                            ThaiName = "สกลนคร"
-                        },
-                        new
-                        {
-                            Id = 48,
-                            ThaiName = "นครพนม"
-                        },
-                        new
-                        {
-                            Id = 49,
-                            ThaiName = "มุกดาหาร"
-                        },
-                        new
-                        {
-                            Id = 50,
-                            ThaiName = "เชียงใหม่"
-                        },
-                        new
-                        {
-                            Id = 51,
-                            ThaiName = "ลำพูน"
-                        },
-                        new
-                        {
-                            Id = 52,
-                            ThaiName = "ลำปาง"
-                        },
-                        new
-                        {
-                            Id = 53,
-                            ThaiName = "อุตรดิตถ์"
-                        },
-                        new
-                        {
-                            Id = 54,
-                            ThaiName = "แพร่"
-                        },
-                        new
-                        {
-                            Id = 55,
-                            ThaiName = "น่าน"
-                        },
-                        new
-                        {
-                            Id = 56,
-                            ThaiName = "พะเยา"
-                        },
-                        new
-                        {
-                            Id = 57,
-                            ThaiName = "เชียงราย"
-                        },
-                        new
-                        {
-                            Id = 58,
-                            ThaiName = "แม่ฮ่องสอน"
-                        },
-                        new
-                        {
-                            Id = 60,
-                            ThaiName = "นครสวรรค์"
-                        },
-                        new
-                        {
-                            Id = 61,
-                            ThaiName = "อุทัยธานี"
-                        },
-                        new
-                        {
-                            Id = 62,
-                            ThaiName = "กำแพงเพชร"
-                        },
-                        new
-                        {
-                            Id = 63,
-                            ThaiName = "ตาก"
-                        },
-                        new
-                        {
-                            Id = 64,
-                            ThaiName = "สุโขทัย"
-                        },
-                        new
-                        {
-                            Id = 65,
-                            ThaiName = "พิษณุโลก"
-                        },
-                        new
-                        {
-                            Id = 66,
-                            ThaiName = "พิจิตร"
-                        },
-                        new
-                        {
-                            Id = 67,
-                            ThaiName = "เพชรบูรณ์"
-                        },
-                        new
-                        {
-                            Id = 70,
-                            ThaiName = "ราชบุรี"
-                        },
-                        new
-                        {
-                            Id = 71,
-                            ThaiName = "กาญจนบุรี"
-                        },
-                        new
-                        {
-                            Id = 72,
-                            ThaiName = "สุพรรณบุรี"
-                        },
-                        new
-                        {
-                            Id = 73,
-                            ThaiName = "นครปฐม"
-                        },
-                        new
-                        {
-                            Id = 74,
-                            ThaiName = "สมุทรสาคร"
-                        },
-                        new
-                        {
-                            Id = 75,
-                            ThaiName = "สมุทรสงคราม"
-                        },
-                        new
-                        {
-                            Id = 76,
-                            ThaiName = "เพชรบุรี"
-                        },
-                        new
-                        {
-                            Id = 77,
-                            ThaiName = "ประจวบคีรีขันธ์"
-                        },
-                        new
-                        {
-                            Id = 80,
-                            ThaiName = "นครศรีธรรมราช"
-                        },
-                        new
-                        {
-                            Id = 81,
-                            ThaiName = "กระบี่"
-                        },
-                        new
-                        {
-                            Id = 82,
-                            ThaiName = "พังงา"
-                        },
-                        new
-                        {
-                            Id = 83,
-                            ThaiName = "ภูเก็ต"
-                        },
-                        new
-                        {
-                            Id = 84,
-                            ThaiName = "สุราษฎร์ธานี"
-                        },
-                        new
-                        {
-                            Id = 85,
-                            ThaiName = "ระนอง"
-                        },
-                        new
-                        {
-                            Id = 86,
-                            ThaiName = "ชุมพร"
-                        },
-                        new
-                        {
-                            Id = 90,
-                            ThaiName = "สงขลา"
-                        },
-                        new
-                        {
-                            Id = 91,
-                            ThaiName = "สตูล"
-                        },
-                        new
-                        {
-                            Id = 92,
-                            ThaiName = "ตรัง"
-                        },
-                        new
-                        {
-                            Id = 93,
-                            ThaiName = "พัทลุง"
-                        },
-                        new
-                        {
-                            Id = 94,
-                            ThaiName = "ปัตตานี"
-                        },
-                        new
-                        {
-                            Id = 95,
-                            ThaiName = "ยะลา"
-                        },
-                        new
-                        {
-                            Id = 96,
-                            ThaiName = "นราธิวาส"
-                        });
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.RefreshToken", b =>
@@ -1441,6 +976,17 @@ namespace SPCaemucals.Data.Migrations
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Models.Company", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Models.Address", "Address")
+                        .WithOne()
+                        .HasForeignKey("SPCaemucals.Data.Models.Company", "AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Models.District", b =>

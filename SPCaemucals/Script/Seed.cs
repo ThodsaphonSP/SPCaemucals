@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SPCaemucals.Data.Identities;
+using SPCaemucals.Data.Models;
+
 // Ensure this is the correct namespace for your models
 
 // Ensure this is the correct namespace
-
 
 
 namespace SPCaemucals.Script;
@@ -12,10 +14,15 @@ public class Seed
 {
     private readonly ApplicationDbContext _context;
 
+
     public Seed(ApplicationDbContext context)
     {
         _context = context;
     }
+
+    
+
+    public Company Company { get; set; }
 
     public async Task InsertProvinceAsync(string filePath)
     {
@@ -31,63 +38,102 @@ public class Seed
 
         string sqlCommand = await File.ReadAllTextAsync(filePath);
 
-    
-        await _context.Database.ExecuteSqlRawAsync(sqlCommand);
 
+        await _context.Database.ExecuteSqlRawAsync(sqlCommand);
     }
 
-    public async Task InsertDistrictAsync(string filePath)
+
+  
+
+
+    // public async Task SeedCompany()
+    // {
+    //     var company = new Company()
+    //     {
+    //         CompanyName = "s&p",
+    //         Address = this.Address
+    //     };
+    //     _context.Company.Add(company);
+    //     await _context.SaveChangesAsync();
+    //
+    //     this.Company = company;
+    // }
+
+   
+
+
+   
+
+    
+
+    private ApplicationUser GetAdminUser()
     {
-        if (_context.Districts.Any())
+        PasswordHasher<ApplicationUser> hasher = new PasswordHasher<ApplicationUser>();
+
+        var adminUser = new ApplicationUser
         {
-            return;
-        }
+            Id = "1",
+            UserName = "S&P_01",
+            FirstName = "John",
+            LastName = "Doe",
+            NormalizedUserName = "S&P_01",
+            PhoneNumber = "0918131505",
+            Email = "admin@sw.com",
+            NormalizedEmail = "ADMIN@SW.COM",
+            EmailConfirmed = true,
+            PasswordHash = hasher.HashPassword(null, "pass@word"),
+            SecurityStamp = string.Empty,
+            Company = Company
+        };
 
-        if (!File.Exists(filePath))
-        {
-            throw new FileNotFoundException("File not found", filePath);
-        }
-
-        string sqlCommand = await File.ReadAllTextAsync(filePath);
-
-    
-        await _context.Database.ExecuteSqlRawAsync(sqlCommand);
+        return adminUser;
     }
-    
-    
-    public async Task InsertSubDistrictAsync(string filePath)
+
+    public async Task SeedApplicationUsers()
     {
-        if (_context.SubDistricts.Any())
+        ApplicationUser adminUser = GetAdminUser();
+
+        _context.Users.Add(adminUser);
+
+        this.Admin = adminUser;
+
+        await _context.SaveChangesAsync();
+
+        await SeedApplicationRoles();
+
+        var rolemap = new ApplicationUserRole
         {
-            return;
-        }
+            RoleId = this.Roles[0].Id,
+            UserId = this.Admin.Id,
+        };
 
-        if (!File.Exists(filePath))
-        {
-            throw new FileNotFoundException("File not found", filePath);
-        }
+        _context.UserRoles.Add(rolemap);
 
-        string sqlCommand = await File.ReadAllTextAsync(filePath);
-
-    
-        await _context.Database.ExecuteSqlRawAsync(sqlCommand);
+        await _context.SaveChangesAsync();
     }
-    
-    public async Task InsertPostalAsync(string filePath)
+
+    public ApplicationUser Admin { get; set; }
+
+
+    public async Task SeedApplicationRoles()
     {
-        if (_context.PostalCodes.Any())
+        var customRoles = new[]
         {
-            return;
-        }
+            new ApplicationRole { Id = "1", Name = "Admin", NormalizedName = "ADMIN" },
+            new ApplicationRole { Id = "2", Name = "SSaleRole", NormalizedName = "SSALEROLE" },
+            new ApplicationRole { Id = "3", Name = "JSaleRole", NormalizedName = "JSALEROLE" },
+            new ApplicationRole { Id = "4", Name = "RSaleRole", NormalizedName = "RSALEROLE" },
+            new ApplicationRole { Id = "5", Name = "AccountRole", NormalizedName = "ACCOUNTROLE" },
+            new ApplicationRole()
+                { Id = "6", Name = "ShippingCoordinatorRole", NormalizedName = "ShippingCoordinatorRole".ToUpper() }
+        };
 
-        if (!File.Exists(filePath))
-        {
-            throw new FileNotFoundException("File not found", filePath);
-        }
+        await _context.Roles.AddRangeAsync(customRoles);
 
-        string sqlCommand = await File.ReadAllTextAsync(filePath);
+        await _context.SaveChangesAsync();
 
-    
-        await _context.Database.ExecuteSqlRawAsync(sqlCommand);
+        this.Roles = customRoles;
     }
+
+    public ApplicationRole[] Roles { get; set; }
 }
