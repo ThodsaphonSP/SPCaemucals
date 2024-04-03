@@ -1,5 +1,4 @@
 using SPCaemucals.Data.Identities;
-using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Dto.Model;
 

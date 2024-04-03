@@ -6,7 +6,6 @@ using SPCaemucals.Backend.Filters;
 using SPCaemucals.Backend.Repositories;
 using SPCaemucals.Backend.Services;
 using SPCaemucals.Data.Identities;
-using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Controllers;
 

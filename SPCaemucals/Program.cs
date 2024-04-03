@@ -12,10 +12,11 @@ using Serilog;
 using SPCaemucals.Backend.Repositories;
 using SPCaemucals.Backend.Services;
 using SPCaemucals.Data.Identities;
-using SPCaemucals.Data.Models;
 using SPCaemucals.Backend.Controllers;
+using SPCaemucals.Backend.Interface;
 using SPCaemucals.Script;
 using SPCaemucals.Utility;
+using JobService = SPCaemucals.Backend.Services.JobService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,7 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddAuthorization();
 builder.Services
     .AddControllers()
+    .AddNewtonsoftJson()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
@@ -101,8 +103,12 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 
+builder.Services.AddScoped<IPhoductMoveHistoryService, PhoductMoveHistoryService>();
+
 builder.Services.AddScoped<ICompanyRepository, CompanyRepository>();
+builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<ProductSeed>();
+builder.Services.AddScoped<ParcelService>();
 
 
 

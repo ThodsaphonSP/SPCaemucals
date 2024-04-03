@@ -113,6 +113,255 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Address", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AddressDetail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("DistrictId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PostalCodeCodeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProvinceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubDistrictId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DistrictId");
+
+                    b.HasIndex("PostalCodeCodeId");
+
+                    b.HasIndex("ProvinceId");
+
+                    b.HasIndex("SubDistrictId");
+
+                    b.ToTable("Addresses");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.ApplicationRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex")
+                        .HasFilter("[NormalizedName] IS NOT NULL");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.ApplicationUser", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("CompanyId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasMaxLength(256)
+                        .HasColumnType("nvarchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique()
+                        .HasFilter("[AddressId] IS NOT NULL");
+
+                    b.HasIndex("CompanyId");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasDatabaseName("EmailIndex");
+
+                    b.HasIndex("NormalizedUserName")
+                        .IsUnique()
+                        .HasDatabaseName("UserNameIndex")
+                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique()
+                        .HasFilter("[PhoneNumber] IS NOT NULL");
+
+                    b.ToTable("AspNetUsers", (string)null);
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.ApplicationUserRole", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Car", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("DeliveryManId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DeliveryManId")
+                        .IsUnique();
+
+                    b.ToTable("Cars");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Category", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("CreatedById")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UpdatedBy")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CreatedById");
+
+                    b.HasIndex("UpdatedBy");
+
+                    b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Company", b =>
+                {
+                    b.Property<int>("CompanyId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyId"));
+
+                    b.Property<int>("AddressId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CompanyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("CompanyId");
+
+                    b.HasIndex("AddressId")
+                        .IsUnique();
+
+                    b.ToTable("Company");
+                });
+
             modelBuilder.Entity("SPCaemucals.Data.Identities.Customer", b =>
                 {
                     b.Property<int>("Id")
@@ -203,307 +452,7 @@ namespace SPCaemucals.Data.Migrations
                         });
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Identities.Parcel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("CashOnDelivery")
-                        .HasColumnType("bit")
-                        .HasComment("เก็บเงินปลายทาง Cash on delivery");
-
-                    b.Property<int>("CustomerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("DeliveryManId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("DeliveryVendorId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ParcelStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("SaleManId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("VendorTrackingNo")
-                        .HasColumnType("nvarchar(max)")
-                        .HasComment("หมายเลข tracking จากขนส่ง");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CustomerId");
-
-                    b.HasIndex("DeliveryManId");
-
-                    b.HasIndex("DeliveryVendorId");
-
-                    b.HasIndex("SaleManId");
-
-                    b.ToTable("Parcels");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Identities.Title", b =>
-                {
-                    b.Property<int>("Id")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Titles");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "นาย"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "นางสาว"
-                        });
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.Address", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("AddressDetail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("DistrictId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PostalCodeCodeId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProvinceId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("SubDistrictId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DistrictId");
-
-                    b.HasIndex("PostalCodeCodeId");
-
-                    b.HasIndex("ProvinceId");
-
-                    b.HasIndex("SubDistrictId");
-
-                    b.ToTable("Addresses");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationRole", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
-
-                    b.ToTable("AspNetRoles", (string)null);
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationUser", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("AddressId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("CompanyId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
-                        .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AddressId")
-                        .IsUnique()
-                        .HasFilter("[AddressId] IS NOT NULL");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasIndex("NormalizedEmail")
-                        .HasDatabaseName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("PhoneNumber")
-                        .IsUnique()
-                        .HasFilter("[PhoneNumber] IS NOT NULL");
-
-                    b.ToTable("AspNetUsers", (string)null);
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationUserRole", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.Category", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("CreatedById")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CreatedById");
-
-                    b.HasIndex("UpdatedBy");
-
-                    b.ToTable("Categories");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.Company", b =>
-                {
-                    b.Property<int>("CompanyId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompanyId"));
-
-                    b.Property<int>("AddressId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CompanyName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("CompanyId");
-
-                    b.HasIndex("AddressId")
-                        .IsUnique();
-
-                    b.ToTable("Company");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.District", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.District", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -522,7 +471,133 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("Districts");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.PostalCode", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Job", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("JobServiceId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("JobTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("MC")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<decimal>("WorkValue")
+                        .HasColumnType("decimal(18, 4)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("JobServiceId");
+
+                    b.HasIndex("JobTypeId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Jobs");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.JobService", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("JobServiceName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("JobServices");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.JobType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("JobTypeName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("JobTypes");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Parcel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CarId")
+                        .HasColumnType("int");
+
+                    b.Property<bool>("CashOnDelivery")
+                        .HasColumnType("bit")
+                        .HasComment("เก็บเงินปลายทาง Cash on delivery");
+
+                    b.Property<int>("CustomerId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("DeliveryVendorId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ParcelStatus")
+                        .HasColumnType("int");
+
+                    b.Property<string>("SaleManId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ShippingCoordinatorId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("VendorTrackingNo")
+                        .HasColumnType("nvarchar(max)")
+                        .HasComment("หมายเลข tracking จากขนส่ง");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CarId");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("DeliveryVendorId");
+
+                    b.HasIndex("SaleManId");
+
+                    b.HasIndex("ShippingCoordinatorId");
+
+                    b.ToTable("Parcels");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.PostalCode", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -541,7 +616,7 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("PostalCodes");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.Product", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -621,7 +696,7 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.ProductMoveHistory", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.ProductMoveHistory", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -676,7 +751,7 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("ProductMoveHistories");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.ProductParcel", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.ProductParcel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -702,7 +777,7 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("ProductParcels");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.Province", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Province", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -716,7 +791,7 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("Provinces");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.RefreshToken", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.RefreshToken", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -752,7 +827,7 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("RefreshToken");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.SubDistrict", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.SubDistrict", b =>
                 {
                     b.Property<int>("Id")
                         .HasColumnType("int");
@@ -771,7 +846,33 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("SubDistricts");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.UnitOfMeasurement", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Title", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Titles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "นาย"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "นางสาว"
+                        });
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.UnitOfMeasurement", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -788,7 +889,7 @@ namespace SPCaemucals.Data.Migrations
                     b.ToTable("UnitOfMeasurements");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.Vendor", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Vendor", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -807,7 +908,7 @@ namespace SPCaemucals.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationRole", null)
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -816,7 +917,7 @@ namespace SPCaemucals.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -825,7 +926,7 @@ namespace SPCaemucals.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -834,16 +935,123 @@ namespace SPCaemucals.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Address", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Identities.District", "District")
+                        .WithMany("Addresses")
+                        .HasForeignKey("DistrictId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Identities.PostalCode", "PostalCode")
+                        .WithMany("Addresses")
+                        .HasForeignKey("PostalCodeCodeId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Identities.Province", "Province")
+                        .WithMany("Addresses")
+                        .HasForeignKey("ProvinceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Identities.SubDistrict", "SubDistrict")
+                        .WithMany("Addresses")
+                        .HasForeignKey("SubDistrictId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("District");
+
+                    b.Navigation("PostalCode");
+
+                    b.Navigation("Province");
+
+                    b.Navigation("SubDistrict");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.ApplicationUser", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Identities.Address", "Address")
+                        .WithOne("Employee")
+                        .HasForeignKey("SPCaemucals.Data.Identities.ApplicationUser", "AddressId");
+
+                    b.HasOne("SPCaemucals.Data.Identities.Company", "Company")
+                        .WithMany("Users")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.ApplicationUserRole", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationRole", "Role")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", "User")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Role");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Car", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", "DeliveryMan")
+                        .WithOne()
+                        .HasForeignKey("SPCaemucals.Data.Identities.Car", "DeliveryManId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("DeliveryMan");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Category", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("CreatedById")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", null)
+                        .WithMany()
+                        .HasForeignKey("UpdatedBy")
+                        .OnDelete(DeleteBehavior.NoAction);
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Company", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Identities.Address", "Address")
+                        .WithOne()
+                        .HasForeignKey("SPCaemucals.Data.Identities.Company", "AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+                });
+
             modelBuilder.Entity("SPCaemucals.Data.Identities.Customer", b =>
                 {
-                    b.HasOne("SPCaemucals.Data.Models.Address", "Addresses")
+                    b.HasOne("SPCaemucals.Data.Identities.Address", "Addresses")
                         .WithOne("Customer")
                         .HasForeignKey("SPCaemucals.Data.Identities.Customer", "AddressId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -859,18 +1067,56 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("Title");
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Identities.District", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Identities.Province", "Province")
+                        .WithMany("Districts")
+                        .HasForeignKey("ProvinceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Province");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Job", b =>
+                {
+                    b.HasOne("SPCaemucals.Data.Identities.JobService", "JobService")
+                        .WithMany("Jobs")
+                        .HasForeignKey("JobServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Identities.JobType", "JobType")
+                        .WithMany("Jobs")
+                        .HasForeignKey("JobTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("JobService");
+
+                    b.Navigation("JobType");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SPCaemucals.Data.Identities.Parcel", b =>
                 {
+                    b.HasOne("SPCaemucals.Data.Identities.Car", "Car")
+                        .WithMany("Parcel")
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("SPCaemucals.Data.Identities.Customer", "Customer")
                         .WithMany("Parcels")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", "ShippingCoordinator")
-                        .WithMany("ShippedPackage")
-                        .HasForeignKey("DeliveryManId")
-                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("SPCaemucals.Data.Identities.DeliveryVendor", "DeliveryVendor")
                         .WithMany("Parcels")
@@ -878,11 +1124,19 @@ namespace SPCaemucals.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", "SaleMan")
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", "SaleMan")
                         .WithMany("SoldItem")
                         .HasForeignKey("SaleManId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", "ShippingCoordinator")
+                        .WithMany("ShippedPackage")
+                        .HasForeignKey("ShippingCoordinatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Car");
 
                     b.Navigation("Customer");
 
@@ -893,116 +1147,9 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("ShippingCoordinator");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.Address", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.PostalCode", b =>
                 {
-                    b.HasOne("SPCaemucals.Data.Models.District", "District")
-                        .WithMany("Addresses")
-                        .HasForeignKey("DistrictId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SPCaemucals.Data.Models.PostalCode", "PostalCode")
-                        .WithMany("Addresses")
-                        .HasForeignKey("PostalCodeCodeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SPCaemucals.Data.Models.Province", "Province")
-                        .WithMany("Addresses")
-                        .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("SPCaemucals.Data.Models.SubDistrict", "SubDistrict")
-                        .WithMany("Addresses")
-                        .HasForeignKey("SubDistrictId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("District");
-
-                    b.Navigation("PostalCode");
-
-                    b.Navigation("Province");
-
-                    b.Navigation("SubDistrict");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationUser", b =>
-                {
-                    b.HasOne("SPCaemucals.Data.Models.Address", "Address")
-                        .WithOne("Employee")
-                        .HasForeignKey("SPCaemucals.Data.Models.ApplicationUser", "AddressId");
-
-                    b.HasOne("SPCaemucals.Data.Models.Company", "Company")
-                        .WithMany("Users")
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Address");
-
-                    b.Navigation("Company");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationUserRole", b =>
-                {
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationRole", "Role")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", "User")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.Category", b =>
-                {
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("CreatedById")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
-                        .WithMany()
-                        .HasForeignKey("UpdatedBy")
-                        .OnDelete(DeleteBehavior.NoAction);
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.Company", b =>
-                {
-                    b.HasOne("SPCaemucals.Data.Models.Address", "Address")
-                        .WithOne()
-                        .HasForeignKey("SPCaemucals.Data.Models.Company", "AddressId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Address");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.District", b =>
-                {
-                    b.HasOne("SPCaemucals.Data.Models.Province", "Province")
-                        .WithMany("Districts")
-                        .HasForeignKey("ProvinceId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Province");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.PostalCode", b =>
-                {
-                    b.HasOne("SPCaemucals.Data.Models.SubDistrict", "SubDistrict")
+                    b.HasOne("SPCaemucals.Data.Identities.SubDistrict", "SubDistrict")
                         .WithMany("PostalCodes")
                         .HasForeignKey("SubDistrictId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1011,35 +1158,35 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("SubDistrict");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.Product", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Product", b =>
                 {
-                    b.HasOne("SPCaemucals.Data.Models.Category", "Category")
+                    b.HasOne("SPCaemucals.Data.Identities.Category", "Category")
                         .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("SPCaemucals.Data.Models.Product", "SubstituteProduct")
+                    b.HasOne("SPCaemucals.Data.Identities.Product", "SubstituteProduct")
                         .WithOne()
-                        .HasForeignKey("SPCaemucals.Data.Models.Product", "SubstituteProductId")
+                        .HasForeignKey("SPCaemucals.Data.Identities.Product", "SubstituteProductId")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("SPCaemucals.Data.Models.UnitOfMeasurement", "UnitOfMeasurement")
+                    b.HasOne("SPCaemucals.Data.Identities.UnitOfMeasurement", "UnitOfMeasurement")
                         .WithMany("Product")
                         .HasForeignKey("UnitOfMeasurementId");
 
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
 
-                    b.HasOne("SPCaemucals.Data.Models.Vendor", "Vendor")
+                    b.HasOne("SPCaemucals.Data.Identities.Vendor", "Vendor")
                         .WithMany("Product")
                         .HasForeignKey("VendorId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1054,27 +1201,27 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("Vendor");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.ProductMoveHistory", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.ProductMoveHistory", b =>
                 {
-                    b.HasOne("SPCaemucals.Data.Models.Category", "Category")
+                    b.HasOne("SPCaemucals.Data.Identities.Category", "Category")
                         .WithMany("ProductMoveHistories")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("CreatedById")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
-                    b.HasOne("SPCaemucals.Data.Models.Product", "Product")
+                    b.HasOne("SPCaemucals.Data.Identities.Product", "Product")
                         .WithMany("ProductMoveHistories")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", null)
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", null)
                         .WithMany()
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -1084,7 +1231,7 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.ProductParcel", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.ProductParcel", b =>
                 {
                     b.HasOne("SPCaemucals.Data.Identities.Parcel", "Parcel")
                         .WithMany("ProductParcels")
@@ -1092,7 +1239,7 @@ namespace SPCaemucals.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("SPCaemucals.Data.Models.Product", "Product")
+                    b.HasOne("SPCaemucals.Data.Identities.Product", "Product")
                         .WithMany("ProductParcels")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Restrict)
@@ -1103,9 +1250,9 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.RefreshToken", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.RefreshToken", b =>
                 {
-                    b.HasOne("SPCaemucals.Data.Models.ApplicationUser", "User")
+                    b.HasOne("SPCaemucals.Data.Identities.ApplicationUser", "User")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1114,15 +1261,56 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.SubDistrict", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.SubDistrict", b =>
                 {
-                    b.HasOne("SPCaemucals.Data.Models.District", "District")
+                    b.HasOne("SPCaemucals.Data.Identities.District", "District")
                         .WithMany("SubDistricts")
                         .HasForeignKey("DistrictId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("District");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Address", b =>
+                {
+                    b.Navigation("Customer")
+                        .IsRequired();
+
+                    b.Navigation("Employee");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.ApplicationRole", b =>
+                {
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.ApplicationUser", b =>
+                {
+                    b.Navigation("RefreshTokens");
+
+                    b.Navigation("ShippedPackage");
+
+                    b.Navigation("SoldItem");
+
+                    b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Car", b =>
+                {
+                    b.Navigation("Parcel");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Category", b =>
+                {
+                    b.Navigation("ProductMoveHistories");
+
+                    b.Navigation("Products");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Company", b =>
+                {
+                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Identities.Customer", b =>
@@ -1135,9 +1323,52 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("Parcels");
                 });
 
+            modelBuilder.Entity("SPCaemucals.Data.Identities.District", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("SubDistricts");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.JobService", b =>
+                {
+                    b.Navigation("Jobs");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.JobType", b =>
+                {
+                    b.Navigation("Jobs");
+                });
+
             modelBuilder.Entity("SPCaemucals.Data.Identities.Parcel", b =>
                 {
                     b.Navigation("ProductParcels");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.PostalCode", b =>
+                {
+                    b.Navigation("Addresses");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Product", b =>
+                {
+                    b.Navigation("ProductMoveHistories");
+
+                    b.Navigation("ProductParcels");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Province", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("Districts");
+                });
+
+            modelBuilder.Entity("SPCaemucals.Data.Identities.SubDistrict", b =>
+                {
+                    b.Navigation("Addresses");
+
+                    b.Navigation("PostalCodes");
                 });
 
             modelBuilder.Entity("SPCaemucals.Data.Identities.Title", b =>
@@ -1145,81 +1376,12 @@ namespace SPCaemucals.Data.Migrations
                     b.Navigation("Customers");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.Address", b =>
-                {
-                    b.Navigation("Customer")
-                        .IsRequired();
-
-                    b.Navigation("Employee");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationRole", b =>
-                {
-                    b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.ApplicationUser", b =>
-                {
-                    b.Navigation("RefreshTokens");
-
-                    b.Navigation("ShippedPackage");
-
-                    b.Navigation("SoldItem");
-
-                    b.Navigation("UserRoles");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.Category", b =>
-                {
-                    b.Navigation("ProductMoveHistories");
-
-                    b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.Company", b =>
-                {
-                    b.Navigation("Users");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.District", b =>
-                {
-                    b.Navigation("Addresses");
-
-                    b.Navigation("SubDistricts");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.PostalCode", b =>
-                {
-                    b.Navigation("Addresses");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.Product", b =>
-                {
-                    b.Navigation("ProductMoveHistories");
-
-                    b.Navigation("ProductParcels");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.Province", b =>
-                {
-                    b.Navigation("Addresses");
-
-                    b.Navigation("Districts");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.SubDistrict", b =>
-                {
-                    b.Navigation("Addresses");
-
-                    b.Navigation("PostalCodes");
-                });
-
-            modelBuilder.Entity("SPCaemucals.Data.Models.UnitOfMeasurement", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.UnitOfMeasurement", b =>
                 {
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("SPCaemucals.Data.Models.Vendor", b =>
+            modelBuilder.Entity("SPCaemucals.Data.Identities.Vendor", b =>
                 {
                     b.Navigation("Product");
                 });

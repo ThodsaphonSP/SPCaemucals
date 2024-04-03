@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SPCaemucals.Data.Identities;
-using SPCaemucals.Data.Models;
 
 // Ensure this is the correct namespace for your models
 

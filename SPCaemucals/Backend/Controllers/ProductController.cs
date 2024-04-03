@@ -7,7 +7,6 @@ using Microsoft.EntityFrameworkCore;
 using SPCaemucals.Backend.Dto;
 using SPCaemucals.Backend.Services;
 using SPCaemucals.Data.Identities;
-using SPCaemucals.Data.Models;
 using SPCaemucals.Data.Utility;
 
 namespace SPCaemucals.Backend.Controllers;
@@ -16,10 +15,10 @@ namespace SPCaemucals.Backend.Controllers;
 [ApiController]
 public class ProductController : ControllerBase
 {
-    private readonly ILogger<ProductController> _logger;
-    private readonly IProductService _productService;
     private readonly ApplicationDbContext _dbContext;
+    private readonly ILogger<ProductController> _logger;
     private readonly IMapper _mapper;
+    private readonly IProductService _productService;
 
     public ProductController(ILogger<ProductController> logger,IProductService productService,ApplicationDbContext dbContext,IMapper mapper)
     {
@@ -29,7 +28,6 @@ public class ProductController : ControllerBase
         _mapper = mapper;
     }
 
-   
 
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK,Type = typeof(ProductDTO))]
@@ -101,13 +99,12 @@ public class ProductController : ControllerBase
     }
 
 
-
-private bool IsProductNotExist(Product product)
+    private bool IsProductNotExist(Product product)
 {
     return !_dbContext.Products.Any(x => x.Name == product.Name);
 }
 
-private IActionResult HandleException(DbUpdateException ex, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction)
+    private IActionResult HandleException(DbUpdateException ex, Microsoft.EntityFrameworkCore.Storage.IDbContextTransaction transaction)
 {
     const string LogMessage = "Product creation failed. Exception: {ExceptionMessage}, Inner Exception: {InnerExceptionMessage}";
     const string ErrorMessage = "Internal server error: {ex.Message}, Inner Exception: {innerExceptionMessage}";

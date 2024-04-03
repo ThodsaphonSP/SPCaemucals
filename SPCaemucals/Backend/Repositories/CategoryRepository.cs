@@ -1,7 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SPCaemucals.Backend.Filters;
 using SPCaemucals.Data.Identities;
-using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Repositories;
 

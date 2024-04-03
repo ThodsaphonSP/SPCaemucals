@@ -2,7 +2,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using SPCaemucals.Data.Enum;
-using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Data.Identities;
 

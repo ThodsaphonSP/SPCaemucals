@@ -3,7 +3,6 @@ using SPCaemucals.Backend.Dto.Product;
 using SPCaemucals.Backend.Filters;
 using SPCaemucals.Backend.Wrappers;
 using SPCaemucals.Data.Identities;
-using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Repositories;
 

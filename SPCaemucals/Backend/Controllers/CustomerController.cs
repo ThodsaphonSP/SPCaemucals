@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using SPCaemucals.Backend.Dto;
 using SPCaemucals.Backend.Dto.Model;
 using SPCaemucals.Data.Identities;
-using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Controllers
 {

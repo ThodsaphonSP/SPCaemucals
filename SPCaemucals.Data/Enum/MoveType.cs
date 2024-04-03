@@ -17,7 +17,13 @@ public enum ParcelStatus
     Delivered,
     Returned,
     InTransit,
-    Ready
+    WaitToPickup,
+    ReceiveInSystem,
+    DeliveryOnTheWay,
+    SuccessfulDelivery,
+    ReturnedPackage,
+    ReturnSuccessful
+    
 }
 
 public enum CustomerType
@@ -26,4 +32,10 @@ public enum CustomerType
     Regular,
     VIP,
     GOV,
+}
+
+public enum JobServiceType
+{
+    Cleaning,
+    Installation
 }

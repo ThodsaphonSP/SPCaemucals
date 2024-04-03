@@ -3,7 +3,6 @@ using SPCaemucals.Backend.Controllers;
 using SPCaemucals.Backend.Dto.Role;
 using SPCaemucals.Backend.Filters;
 using SPCaemucals.Data.Identities;
-using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Backend.Dto.AutoMapperProfiel;
 
@@ -35,12 +34,12 @@ public class MapProFile:Profile
 
         CreateMap<UnitOfMeasurement, UnitOfMeasurementDTO>().ReverseMap();
 
-        CreateMap<Data.Models.Product, SPCaemucals.Backend.Dto.ProductDTO>()
+        CreateMap<Data.Identities.Product, SPCaemucals.Backend.Dto.ProductDTO>()
             .ReverseMap()
             .ForMember(dest => dest.Id, opt => opt.Ignore());
         
         
-        CreateMap<SPCaemucals.Data.Models.Company, SPCaemucals.Backend.Dto.CompanyDTO.Company>().ReverseMap();
+        CreateMap<Company, SPCaemucals.Backend.Dto.CompanyDTO.Company>().ReverseMap();
 
         CreateMap<DeliveryVendor, DeliveryVendorDTO>().ReverseMap();
 
@@ -48,11 +47,28 @@ public class MapProFile:Profile
 
         CreateMap<DeliveryVendor, DeliveryVendorDTO>().ReverseMap();
         
-        CreateMap<ProductParcel, ProductParcelDTO>().ReverseMap();
+        CreateMap<ProductParcel, ProductParcelDTO>()
+            
+            .ReverseMap();
         
-        CreateMap<Parcel, ParcelDTO>().ReverseMap();
+        CreateMap<Parcel, ParcelDTO>()
+            .ForMember(dest=>dest.ParcelStatusName,opt=>opt.MapFrom(src=>src.ParcelStatus.ToString()))
+            .ReverseMap();
         CreateMap<Address, AddressDTO>().ReverseMap();
         CreateMap<Title, TitleDTO>().ReverseMap();
+
+        CreateMap<ProductMoveHistory, ProductMoveHistoryDTO>().ReverseMap();
+
+        CreateMap<Job, JobDTO>().ReverseMap()
+            .ForMember(dest => dest.Id, opt => opt.Ignore());
+        
+        
+        CreateMap<JobService, JobServiceDTO>().ReverseMap();
+        
+        
+        CreateMap<JobType, JobTypeDTO>().ReverseMap();
+        
+        
 
     }
 }

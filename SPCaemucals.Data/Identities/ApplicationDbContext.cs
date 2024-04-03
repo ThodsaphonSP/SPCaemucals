@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
-using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Data.Identities
 {
@@ -41,6 +40,17 @@ namespace SPCaemucals.Data.Identities
         
         public DbSet<DeliveryVendor> DeliveryVendors { get; set; }
         public DbSet<ProductParcel> ProductParcels { get; set; }
+        
+        public DbSet<Car> Cars { get; set; }
+
+        public DbSet<Job> Jobs { get; set; }
+
+        public DbSet<JobService> JobServices { get; set; }
+
+        public DbSet<JobType> JobTypes { get; set; }
+
+
+        
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -84,6 +94,63 @@ namespace SPCaemucals.Data.Identities
             ConfigProductParcel(modelBuilder);
 
             ConfigComany(modelBuilder);
+
+            ConfigDeliveryVendor(modelBuilder);
+
+            ConfigCar(modelBuilder);
+
+            ConfigJobservice(modelBuilder);
+            
+            ConfigJob(modelBuilder);
+
+            ConfigJobType(modelBuilder);
+
+
+        }
+
+        private void ConfigJobType(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<JobType>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasMany<Job>(x => x.Jobs)
+                    .WithOne(x => x.JobType)
+                    .HasForeignKey(x => x.JobTypeId);
+            });
+        }
+
+        private void ConfigJobservice(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<JobService>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                entity.HasMany<Job>(x => x.Jobs)
+                    .WithOne(x => x.JobService)
+                    .HasForeignKey(x => x.JobServiceId);
+
+            });
+        }
+        
+        private void ConfigJob(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Job>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+            });
+        }
+
+        private void ConfigCar(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Car>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+                
+                entity.HasOne<ApplicationUser>(e => e.DeliveryMan)
+                    .WithOne()
+                    .HasForeignKey<Car>(e => e.DeliveryManId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
         }
 
         private void ConfigComany(ModelBuilder modelBuilder)
@@ -115,6 +182,7 @@ namespace SPCaemucals.Data.Identities
                     .HasForeignKey(e => e.ParcelId)
                     .IsRequired()
                     .OnDelete(DeleteBehavior.Restrict);
+                
             });
         }
 
@@ -508,9 +576,9 @@ namespace SPCaemucals.Data.Identities
                     .OnDelete(DeleteBehavior.Restrict);
                 
                 
-                entity.HasOne<ApplicationUser>(e => e.ShippingCoordinator)
-                    .WithMany(e => e.ShippedPackage)
-                    .HasForeignKey(e => e.DeliveryManId)
+                entity.HasOne<Car>(e => e.Car)
+                    .WithMany(e => e.Parcel)
+                    .HasForeignKey(e => e.CarId)
                     .IsRequired(false)
                     .OnDelete(DeleteBehavior.Restrict);
 

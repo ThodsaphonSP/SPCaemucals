@@ -10,7 +10,6 @@ using Microsoft.IdentityModel.Tokens;
 using SPCaemucals.Backend.Filters;
 using SPCaemucals.Backend.Models;
 using SPCaemucals.Data.Identities;
-using SPCaemucals.Data.Models;
 using SPCaemucals.Utility;
 
 namespace SPCaemucals.Backend.Controllers

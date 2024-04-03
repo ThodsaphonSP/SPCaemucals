@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using SPCaemucals.Data.Models;
 
 namespace SPCaemucals.Data.Identities;
 
@@ -51,6 +50,54 @@ public class ProductSeed
             using var transaction = await _dbContext.Database.BeginTransactionAsync();
             try
             {
+                
+                
+                // seed when prd
+
+                List<JobService> jobServices = await _dbContext.JobServices.Take(10).ToListAsync();
+
+                if (!jobServices.Any())
+                {
+                    List<JobService> newJobservices = new List<JobService>()
+                    {
+                        new()
+                        {
+                            JobServiceName = "งานล้าง"
+                        },
+                        new()
+                        {
+                            JobServiceName = "งานติดตั้ง"
+                        }
+                    };
+
+                    _dbContext.JobServices.AddRange(newJobservices);
+
+                    await _dbContext.SaveChangesAsync();
+
+
+                }
+                
+                
+                List<JobType> jobTypes = await _dbContext.JobTypes.Take(10).ToListAsync();
+
+                if (!jobTypes.Any())
+                {
+                    List<JobType> newJobtype = new List<JobType>()
+                    {
+                        new()
+                        {
+                            JobTypeName = "ล้าง-ติดตั้ง"
+                        }
+                    };
+
+                    _dbContext.JobTypes.AddRange(newJobtype);
+
+                    await _dbContext.SaveChangesAsync();
+
+
+                }
+                
+                
                 this.Provinces = await _dbContext.Provinces.Select(x => x).Take(10).ToListAsync();
 
                 if (!this.Provinces.Any())

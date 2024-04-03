@@ -11,8 +11,10 @@ using SPCaemucals.Backend.Filters;
 using SPCaemucals.Backend.Validator.Parcel;
 using SPCaemucals.Data.Enum;
 using SPCaemucals.Data.Identities;
-using SPCaemucals.Data.Models;
 using SPCaemucals.Data.Utility;
+using Microsoft.AspNetCore.JsonPatch;
+using SPCaemucals.Backend.Models;
+using SPCaemucals.Backend.Validator;
 
 namespace SPCaemucals.Backend.Controllers
 {
@@ -25,21 +27,32 @@ namespace SPCaemucals.Backend.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IMapper _mapper;
+        private readonly ParcelService _parcelService;
 
         public ParcelController(ILogger<ParcelController> logger, ApplicationDbContext dbContext,
-            UserManager<ApplicationUser> userManager,IMapper mapper)
+            UserManager<ApplicationUser> userManager,IMapper mapper,ParcelService parcelService)
         {
             _logger = logger;
             _dbContext = dbContext;
             _userManager = userManager;
             _mapper = mapper;
+            _parcelService = parcelService;
         }
 
         // GET: api/<ParcelController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        [HttpGet()]
+        public async Task<IActionResult> Get(ParcelStatus? status = null)
         {
-            return new string[] { "value1", "value2" };
+            var userId = HttpContext.User.FindFirstValue("UserId");
+            if (string.IsNullOrEmpty(userId))
+            {
+                return BadRequest("userId is of the login user is null");
+            }
+            
+            List<Parcel> parcels = await _parcelService.GetParcelsByStatus(status,userId);
+
+            var parcelDtos = _mapper.Map<List<ParcelDTO>>(parcels);
+            return Ok(parcelDtos);
         }
 
         // GET api/<ParcelController>/5
@@ -48,6 +61,7 @@ namespace SPCaemucals.Backend.Controllers
         {
             return "value";
         }
+        
 
         /// <summary>
         /// Creates a new parcel entry.
@@ -116,7 +130,7 @@ namespace SPCaemucals.Backend.Controllers
                         {
                             Customer = newCustomer == null ? customer : newCustomer,
                             SaleMan = saleman,
-                            ParcelStatus = ParcelStatus.Ready,
+                            ParcelStatus = ParcelStatus.WaitToPickup,
                             CashOnDelivery = receiver.Cod,
                             DeliveryVendorId = sender.VendorDelivery.Id
                         };
@@ -269,6 +283,72 @@ namespace SPCaemucals.Backend.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Patch([FromRoute] int id, [FromBody] JsonPatchDocument<Parcel> patchDocument)
+        {
+            if (patchDocument != null)
+            {
+                var parcel = await _dbContext.Parcels.FindAsync(id);
+                if (parcel == null)
+                {
+                    return NotFound();
+                }
+                patchDocument.ApplyTo(parcel,ModelState);
+
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                
+                ParcelValidator validator = new ParcelValidator();
+                var resultValidate = validator.Validate(parcel);
+                
+                if (!resultValidate.IsValid)
+                {
+                    return BadRequest(resultValidate);
+                }
+                await _dbContext.SaveChangesAsync();
+                return Ok(parcel);
+            }
+            else
+            {
+                return BadRequest("Patch document is null");
+            }
+        }
+
+        [HttpPatch("updateTracking")]
+        public async Task<IActionResult> Patch([FromBody]TrackingModel model)
+        {
+            var userId = HttpContext.User.FindFirstValue("UserId");
+            
+            TrackingValidator trackingValidator = new TrackingValidator();
+            
+            var validationResult = trackingValidator.Validate(model);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult);
+            }
+
+            try
+            {
+                Parcel result = await _parcelService.updateTracking(model);
+
+                if (result == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Internal Server error");
+            }
+
+            
+
         }
 
         // DELETE api/<ParcelController>/5

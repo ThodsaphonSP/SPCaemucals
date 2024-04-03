@@ -1,6 +1,4 @@
-using SPCaemucals.Data.Identities;
-
-namespace SPCaemucals.Data.Models;
+namespace SPCaemucals.Data.Identities;
 
 public class Address: IEqualityComparer<Address>
 {

@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Text.Encodings.Web;
 using Microsoft.AspNetCore.Identity;
-using SPCaemucals.Data.Models;
+using SPCaemucals.Data.Identities;
 
 namespace SPCaemucals.Backend.Services;
 

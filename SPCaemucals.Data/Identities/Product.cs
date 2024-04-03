@@ -1,9 +1,7 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using SPCaemucals.Data.Enum;
 
-namespace SPCaemucals.Data.Models;
+namespace SPCaemucals.Data.Identities;
 
 public class Product 
 {

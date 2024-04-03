@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-namespace SPCaemucals.Data.Models;
+
+namespace SPCaemucals.Data.Identities;
 
 public class Province:IEqualityComparer<Province>
 {
