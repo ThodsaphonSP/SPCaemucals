@@ -1,5 +1,4 @@
 using JetBrains.Annotations;
-using Microsoft.EntityFrameworkCore;
 using Moq;
 using SPCaemucals.Backend.Models;
 using SPCaemucals.Backend.Services;
@@ -14,10 +13,7 @@ namespace SPChemicalTest.Backend.Services
     public class JobCalculatorTest
     {
 
-        public JobServiceTest()
-        {
-            
-        }
+        
 
         
 
